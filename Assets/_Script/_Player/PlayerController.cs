@@ -39,6 +39,9 @@ public class PlayerController : MonoBehaviour
     public Action<PlayerController> OnDash;
     public Action<PlayerController> OnAttack;
 
+    [Header("ÀåÂø")]
+    public MeleeWeapon weapon;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -61,6 +64,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.sharedMaterial = normalFrictionMaterial;
         }
+
     }
 
     void Update()
@@ -90,6 +94,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             spumAnimationManager.PlayAnimation(PlayerState.ATTACK, 0);
+            OnAttack.Invoke(this);
         }
 
         UpdateStaminaUI();
@@ -198,4 +203,6 @@ public class PlayerController : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
     }
+
+
 }

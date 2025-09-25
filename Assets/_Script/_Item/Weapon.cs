@@ -12,9 +12,9 @@ public abstract class Weapon : Item<WeaponData>, IWeapon
 
     public override void Equip(PlayerController owner)
     {
-        if (owner == null) return;
-        controller = owner;
-        controller.OnAttack += Attack;
+        base.Equip(owner);
+        owner.OnAttack += Attack;
+        Debug.Log("equip");
     }
 
     public override void Unequip(PlayerController owner)
