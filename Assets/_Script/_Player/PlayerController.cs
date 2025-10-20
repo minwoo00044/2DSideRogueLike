@@ -127,13 +127,13 @@ public class PlayerController : MonoBehaviour
 
         if (dashDirection == Vector2.zero)
         {
-            if (isGrounded) // 땅에 있을 때만 점프 가능
+            if (isGrounded) 
             {
                 // Y축 속도를 초기화하여 점프 높이를 일정하게 만듦
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
                 rb.AddForce(Vector2.up * dashForce, ForceMode2D.Impulse);
 
-                // 여기에 점프 애니메이션 호출 로직을 추가할 수 있습니다.
+                // 점프 애니메이션 호출 로직
                 // spumAnimationManager.PlayAnimation(PlayerState.OTHER, 1); // 예시
             }
             return; // 점프 처리 후 함수 종료
@@ -162,7 +162,6 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce(finalDashForce, ForceMode2D.Impulse);
 
-        // ▼▼▼▼▼ 잔상 생성 로직 변경 ▼▼▼▼▼
         float afterimageTimer = 0f;
         while (afterimageTimer < dashDuration)
         {
@@ -174,10 +173,9 @@ public class PlayerController : MonoBehaviour
                 afterimage.Setup(transform);
             }
 
-            afterimageTimer += 0.05f; // 0.05초 간격으로 생성 (조절 가능)
+            afterimageTimer += 0.05f; 
             yield return new WaitForSeconds(0.05f);
         }
-        // ▲▲▲▲▲ 여기까지 변경 ▲▲▲▲▲
 
         yield return new WaitForSeconds(dashDuration);
 
