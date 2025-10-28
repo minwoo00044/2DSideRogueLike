@@ -26,24 +26,24 @@ public class _Tester : MonoBehaviour
 
     }
 
-    private void OnDrawGizmos()
-    {
-        if (controller == null || MeleeTestWeaponData == null) return;
+    //private void OnDrawGizmos()
+    //{
+    //    if (controller == null || MeleeTestWeaponData == null) return;
 
-        Gizmos.color = Color.red;
+    //    Gizmos.color = Color.red;
 
-        Vector2 currentPosition = controller.transform.position;
+    //    Vector2 currentPosition = controller.transform.position;
 
-        // 1. 캐릭터의 현재 localScale.x 값을 이용해 바라보는 방향을 구합니다. (오른쪽: 1, 왼쪽: -1)
-        float facingDirection = -Mathf.Sign(controller.transform.localScale.x);
+    //    // 1. 캐릭터의 현재 localScale.x 값을 이용해 바라보는 방향을 구합니다. (오른쪽: 1, 왼쪽: -1)
+    //    float facingDirection = -Mathf.Sign(controller.transform.localScale.x);
 
-        // 2. 방향을 적용한 새로운 공격 오프셋을 계산합니다.
-        // AttackOffset.x에 facingDirection을 곱해줘서 캐릭터가 왼쪽을 보면 x 오프셋이 음수가 되도록 합니다.
-        Vector2 offset = new Vector2(MeleeTestWeaponData.AttackOffset.x * facingDirection, MeleeTestWeaponData.AttackOffset.y);
+    //    // 2. 방향을 적용한 새로운 공격 오프셋을 계산합니다.
+    //    // AttackOffset.x에 facingDirection을 곱해줘서 캐릭터가 왼쪽을 보면 x 오프셋이 음수가 되도록 합니다.
+    //    Vector2 offset = new Vector2(MeleeTestWeaponData.AttackOffset.x * facingDirection, MeleeTestWeaponData.AttackOffset.y);
 
-        // 3. 최종 공격 중심 위치를 계산합니다.
-        Vector2 attackCenter = currentPosition + offset;
+    //    // 3. 최종 공격 중심 위치를 계산합니다.
+    //    Vector2 attackCenter = currentPosition + offset;
 
-        Gizmos.DrawWireCube(attackCenter, MeleeTestWeaponData.BoxSize);
-    }
+    //    Gizmos.DrawWireCube(attackCenter, MeleeTestWeaponData.BoxSize);
+    //}
 }

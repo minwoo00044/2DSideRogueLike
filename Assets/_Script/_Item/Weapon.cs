@@ -2,7 +2,6 @@ using UnityEngine;
 
 public abstract class Weapon : Item<WeaponData>, IWeapon
 {
-    private PlayerController controller;
     public void Attack(PlayerController owner)
     {
         _Attack(owner);
@@ -14,6 +13,7 @@ public abstract class Weapon : Item<WeaponData>, IWeapon
     {
         base.Equip(owner);
         owner.OnAttack += Attack;
+        owner.weapon = this;
         Debug.Log("equip");
     }
 
@@ -23,7 +23,8 @@ public abstract class Weapon : Item<WeaponData>, IWeapon
         {
             owner.OnAttack -= Attack;
         }
-        controller = null;
+        owner = null;
 
     }
+
 }

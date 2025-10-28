@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     public Action<PlayerController> OnAttack;
 
     [Header("ÀåÂø")]
-    public MeleeWeapon weapon;
+    public Weapon weapon;
 
     void Awake()
     {
@@ -202,5 +202,12 @@ public class PlayerController : MonoBehaviour
         transform.localScale = theScale;
     }
 
+    private void OnDrawGizmos()
+    {
+        if (weapon is IGizmoDrawable drawableWeapon)
+        {
+            drawableWeapon.DrawGizmos(this.transform);
+        }
 
+    }
 }
