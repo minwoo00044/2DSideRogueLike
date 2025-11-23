@@ -1,21 +1,27 @@
 
 using UnityEngine;
 
-public class ChaseState : State, IState
+public class DieState : State, IState
 {
-    private Transform target;
-    public ChaseState(StateMachine machine) : base(machine)
+    public DieState(StateMachine machine) : base(machine)
     {
     }
 
     public void OnEnter()
     {
-        target = machine.target;
+        machine.owner.spum.PlayAnimation(PlayerState.DEATH, 0);
+        machine.gameObject.SetActive(false);
     }
 
     public void OnUpdate()
     {
- 
+        // 몬스터 체력이 0이면
+        //if (machine.hp <= 0)
+        //{
+        //    monster.ChangeState(new DieState()); // Die 상태로 전환
+        //    return;
+        //}
+
         //// 플레이어가 사거리에 들어오면
         //if (Vector2.Distance(machine.transform.position, target.position) <= machine.attackRange)
         //{

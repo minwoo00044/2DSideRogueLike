@@ -1,11 +1,14 @@
 using UnityEngine;
+[RequireComponent(typeof(StateMachine))] 
 
 public class Enemy : MonoBehaviour, IDamagable
 {
     [Header("Fallback (Inspector)")]
     public float tempHealth = 100f; // 기존 호환용 필드 (기본 체력)
+    public float testDamage = 1.0f;
 
     public PlayerController player { get; set; }
+    public SPUM_Prefabs spum {  get; set; }
 
     // 런타임 사용 현재 체력
     private float currentHealth;
@@ -38,12 +41,18 @@ public class Enemy : MonoBehaviour, IDamagable
     public float AtkRange => atkRange;
     public float AtkSpeed => atkSpeed;
     public float MaxHp => maxHp;
+    public float CurrentHealth => currentHealth;
     public float AtkDamage => atkDamage;
     #endregion
-
+    [ContextMenu("Damge")]
+    public void TestDamage()
+    {
+        TakeDamage(testDamage);
+    }
     private void Awake()
     {
         stateMachine = GetComponent<StateMachine>();
+        spum = GetComponent<SPUM_Prefabs>();
         player = FindAnyObjectByType<PlayerController>();
         // Inspector에서 직접 enemyData가 설정되어 있을 수 있으므로 Awake/Start에서 동기화
         ApplyEnemyData();
@@ -68,6 +77,7 @@ public class Enemy : MonoBehaviour, IDamagable
         atkRange = enemyData.AtkRange;
         atkSpeed = enemyData.AtkSpeed;
         maxHp = enemyData.MaxHp;
+        currentHealth = enemyData.MaxHp;
         atkDamage = enemyData.AtkDamage;
     }
 
@@ -84,8 +94,6 @@ public class Enemy : MonoBehaviour, IDamagable
     //testcode
     private void Die()
     {
-        Debug.Log("Enemy died.");
-        // Add death logic here (e.g., play animation, drop loot, etc.)
-        Destroy(gameObject);
+        stateMachine.ChangeState(EState.Die);
     }
 }
