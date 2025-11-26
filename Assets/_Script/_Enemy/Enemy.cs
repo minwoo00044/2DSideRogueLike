@@ -1,20 +1,24 @@
+ï»¿using System.Collections;
 using UnityEngine;
 [RequireComponent(typeof(StateMachine))] 
 
 public class Enemy : MonoBehaviour, IDamagable
 {
     [Header("Fallback (Inspector)")]
-    public float tempHealth = 100f; // ±âÁ¸ È£È¯¿ë ÇÊµå (±âº» Ã¼·Â)
+    public float tempHealth = 100f; 
     public float testDamage = 1.0f;
 
     public PlayerController player { get; set; }
     public SPUM_Prefabs spum {  get; set; }
 
-    // ·±Å¸ÀÓ »ç¿ë ÇöÀç Ã¼·Â
+    // ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½
+    [SerializeField]
     private float currentHealth;
     private StateMachine stateMachine;
-
-    #region EnemyData º¹»ç¸â¹ö
+    private Rigidbody2D rb => GetComponent<Rigidbody2D>();
+    [SerializeField]
+    private Vector2 _moveInput;
+    #region EnemyData
     [SerializeField]
     private EnemyData enemyData;
     public EnemyData EnemyData
@@ -27,7 +31,7 @@ public class Enemy : MonoBehaviour, IDamagable
         }
     }
 
-    [Header("Enemy Stats (Ä«ÇÇµÈ °ª)")]
+    [Header("Enemy Stats")]
     [SerializeField] private string enemyName;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float atkRange;
@@ -35,7 +39,7 @@ public class Enemy : MonoBehaviour, IDamagable
     [SerializeField] private float maxHp;
     [SerializeField] private float atkDamage;
 
-    // ÀÐ±â Àü¿ë ÇÁ·ÎÆÛÆ¼
+    // ï¿½Ð±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼
     public string EnemyName => enemyName;
     public float MoveSpeed => moveSpeed;
     public float AtkRange => atkRange;
@@ -53,25 +57,34 @@ public class Enemy : MonoBehaviour, IDamagable
     {
         stateMachine = GetComponent<StateMachine>();
         spum = GetComponent<SPUM_Prefabs>();
+        if (spum != null)
+        {
+            spum.OverrideControllerInit();
+            spum.PopulateAnimationLists();
+        }
         player = FindAnyObjectByType<PlayerController>();
-        // Inspector¿¡¼­ Á÷Á¢ enemyData°¡ ¼³Á¤µÇ¾î ÀÖÀ» ¼ö ÀÖÀ¸¹Ç·Î Awake/Start¿¡¼­ µ¿±âÈ­
+        stateMachine.owner = this;
+        stateMachine.target = player.transform;
         ApplyEnemyData();
     }
 
     private void Start()
     {
-        // º¹»çµÈ maxHp°¡ 0ÀÌ¸é ±âÁ¸ tempHealth¸¦ »ç¿ë (È£È¯¼º)
+
         if (maxHp <= 0f)
             maxHp = tempHealth;
 
         currentHealth = maxHp;
-        stateMachine.owner = this;
     }
+    private void FixedUpdate()
+    {
+        // ìµœì¢…ì ìœ¼ë¡œ ë“¤ì–´ê°€ëŠ” ê°’ì´ ì–¼ë§ˆì¸ì§€ í™•ì¸
 
+        rb.linearVelocity = new Vector2(_moveInput.x * moveSpeed, rb.linearVelocity.y);
+    }
     private void ApplyEnemyData()
     {
-        // enemyData ÇÊµå°¡ Inspector¿¡¼­ ¼³Á¤µÇ¾î ÀÖ´Ù¸é ÇØ´ç °ªÀ¸·Î ¸â¹ö¸¦ µ¤¾î¾´´Ù.
-        // (struct ±âº»°ªÀÏ ¶§´Â tempHealth¸¦ »ç¿ëÇÏµµ·Ï Start¿¡¼­ Ã³¸®)
+
         enemyName = enemyData.EnemyName;
         moveSpeed = enemyData.MoveSpeed;
         atkRange = enemyData.AtkRange;
@@ -80,20 +93,30 @@ public class Enemy : MonoBehaviour, IDamagable
         currentHealth = enemyData.MaxHp;
         atkDamage = enemyData.AtkDamage;
     }
-
+    public void SetMoveDirection(Vector2 direction)
+    {
+        _moveInput = direction;
+        if (direction.x != 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * (direction.x > 0 ? -1 : 1);
+            transform.localScale = scale;
+        }
+    }
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
         Debug.Log($"Enemy took {damage} damage, current health: {currentHealth}");
         if (currentHealth <= 0)
         {
-            Die();
+            stateMachine.ChangeState(EState.Die);
         }
     }
 
     //testcode
-    private void Die()
+    public IEnumerator DelayDie(float delay)
     {
-        stateMachine.ChangeState(EState.Die);
-    }
+        yield return new WaitForSeconds(delay);
+        gameObject.SetActive(false);
+    } 
 }

@@ -9,8 +9,13 @@ public class DieState : State, IState
 
     public void OnEnter()
     {
-        machine.owner.spum.PlayAnimation(PlayerState.DEATH, 0);
-        machine.gameObject.SetActive(false);
+        machine.owner.spum.PlayAnimation(PlayerState.DEATH, 0, out float animLength);
+        machine.owner.StartCoroutine(machine.owner.DelayDie(animLength));
+    }
+
+    public void OnExit()
+    {
+        throw new System.NotImplementedException();
     }
 
     public void OnUpdate()
@@ -34,9 +39,4 @@ public class DieState : State, IState
         //monster.rb.velocity = new Vector2(direction.x * monster.moveSpeed, monster.rb.velocity.y);
     }
 
-    public void OnExit()
-    {
-        // monster.anim.SetBool("IsChasing", false);
-        //monster.rb.velocity = Vector2.zero; // ∏ÿ√„
-    }
 }

@@ -17,7 +17,6 @@ public class StateMachine : MonoBehaviour
     private Dictionary<EState,IState> eStatePair = new Dictionary<EState,IState>();
     private void Start()
     {
-        target = owner.player.transform;
         eStatePair.Add(EState.Chase, new ChaseState(this));
         eStatePair.Add(EState.Die, new DieState(this));
         ChangeState(EState.Chase);

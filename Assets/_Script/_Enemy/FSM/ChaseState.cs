@@ -11,21 +11,23 @@ public class ChaseState : State, IState
     public void OnEnter()
     {
         target = machine.target;
+
+        machine.owner.spum.PlayAnimation(PlayerState.MOVE, 0);
     }
 
     public void OnUpdate()
     {
- 
-        //// 플레이어가 사거리에 들어오면
-        //if (Vector2.Distance(machine.transform.position, target.position) <= machine.attackRange)
+
+        // 플레이어가 사거리에 들어오면
+        //if (Vector2.Distance(machine.transform.position, target.position) <= machine.owner.AtkRange)
         //{
-        //    monster.ChangeState(new AttackState()); // Attack 상태로 전환
+        //    //machine.ChangeState(new AttackState()); // Attack 상태로 전환
         //    return;
         //}
 
-        //// 플레이어 추적 로직...
-        //Vector2 direction = (target.position - monster.transform.position).normalized;
-        //monster.rb.velocity = new Vector2(direction.x * monster.moveSpeed, monster.rb.velocity.y);
+        // 플레이어 추적 로직...
+        Vector2 direction = (target.position - machine.transform.position).normalized;
+        machine.owner.SetMoveDirection(direction);
     }
 
     public void OnExit()

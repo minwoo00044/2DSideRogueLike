@@ -189,6 +189,46 @@ public class SPUM_Prefabs : MonoBehaviour
             }
         }
     }
+    // 매개변수에 out float duration 추가
+    public void PlayAnimation(PlayerState PlayState, int index, out float duration)
+    {
+        Animator animator = _anim;
+        var animations = StateAnimationPairs[PlayState.ToString()];
+
+        // 사용할 클립을 가져옵니다.
+        var targetClip = animations[index];
+
+        // ★ 여기서 out 변수에 길이를 넣어줍니다. (함수가 끝나기 전에 반드시 값을 넣어야 함)
+        duration = targetClip.length;
+
+        OverrideController[PlayState.ToString()] = targetClip;
+
+        var StateStr = PlayState.ToString();
+        bool isMove = StateStr.Contains("MOVE");
+        bool isDebuff = StateStr.Contains("DEBUFF");
+        bool isDeath = StateStr.Contains("DEATH");
+
+        animator.SetBool("1_Move", isMove);
+        animator.SetBool("5_Debuff", isDebuff);
+        animator.SetBool("isDeath", isDeath);
+
+        if (!isMove && !isDebuff)
+        {
+            AnimatorControllerParameter[] parameters = animator.parameters;
+            foreach (AnimatorControllerParameter parameter in parameters)
+            {
+                if (parameter.type == AnimatorControllerParameterType.Trigger)
+                {
+                    bool isTrigger = parameter.name.ToUpper().Contains(StateStr.ToUpper());
+                    if (isTrigger)
+                    {
+                        animator.SetTrigger(parameter.name);
+                    }
+                }
+            }
+        }
+        // return은 없습니다. (void 유지)
+    }
     AnimationClip LoadAnimationClip(string clipPath)
     {
         // "Animations" 폴더에서 애니메이션 클립 로드
