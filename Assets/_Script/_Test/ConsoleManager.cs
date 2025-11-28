@@ -17,6 +17,7 @@ public class ConsoleManager : MonoBehaviour
         nameCommandDict = new Dictionary<string, Func<string, bool>>
         {
             { "Log", TestLog },
+            { "Equip", EquipItem },
             { "Quit", (cmd) => { Application.Quit(); return true; } } // 람다식 예시
         };
 
@@ -98,6 +99,20 @@ public class ConsoleManager : MonoBehaviour
         }
 
         Debug.Log($"[Console Log] {stringBuilder.ToString()}");
+        return true;
+    }
+
+    public bool EquipItem(string command)
+    {
+        var split = command.Split();
+        if(split.Length < 3 || split.Length >3)
+        {
+            Debug.LogWarning("This is a command that cannot be performed.");
+            return false;
+        }
+        var itemName = split[1];
+        var itemPartType = split[2];
+        AdvancedEquipmentController.Instance.EquipItem(itemName, itemPartType);
         return true;
     }
 }

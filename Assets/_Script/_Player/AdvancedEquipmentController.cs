@@ -3,6 +3,7 @@ using System.Linq; // LINQ를 사용하기 위해 추가
 
 public class AdvancedEquipmentController : MonoBehaviour
 {
+    public static AdvancedEquipmentController Instance { get; set; }
     [Header("연결 필수")]
     [SerializeField] private GameObject playerCharacter; // 인스펙터에서 플레이어 SPUM 캐릭터 연결
 
@@ -12,6 +13,14 @@ public class AdvancedEquipmentController : MonoBehaviour
 
     void Start()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
         if (playerCharacter == null)
         {
             Debug.LogError("Player Character가 할당되지 않았습니다!");
@@ -148,17 +157,17 @@ public class AdvancedEquipmentController : MonoBehaviour
     // ----- 테스트용 코드 -----
     void Update()
     {
-        // '1' 키를 눌러 'Cloth_5' 라는 이름의 옷 장착 시도
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            // 이 이름은 SpumPackage 내의 SpumTextureData에 정의된 Name과 일치해야 합니다.
-            EquipItem("Cloth_5", "Cloth");
-        }
+        //// '1' 키를 눌러 'Cloth_5' 라는 이름의 옷 장착 시도
+        //if (Input.GetKeyDown(KeyCode.Alpha1))
+        //{
+        //    // 이 이름은 SpumPackage 내의 SpumTextureData에 정의된 Name과 일치해야 합니다.
+        //    EquipItem("Cloth_5", "Cloth");
+        //}
 
-        // '2' 키를 눌러 'Weapon_2' 라는 이름의 무기 장착 시도
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            EquipItem("Sword_2", "Weapons");
-        }
+        //// '2' 키를 눌러 'Weapon_2' 라는 이름의 무기 장착 시도
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    EquipItem("Sword_2", "Weapons");
+        //}
     }
 }
