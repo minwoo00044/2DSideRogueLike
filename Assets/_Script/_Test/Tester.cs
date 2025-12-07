@@ -18,6 +18,11 @@ public class _Tester : MonoBehaviour
         {
             MeleeTestWeapon.Equip(controller);
         }
+        ItemCache.ReadData<MeleeWeaponData>("MeleeWeaponData");
+
+        // 테스트
+        var item = ItemCache.GetItem(1001); // ID 예시
+        if (item != null) Debug.Log(item.ItemName);
     }
 
     // Update is called once per frame

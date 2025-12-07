@@ -20,7 +20,7 @@ public class MeleeWeapon : Weapon,IGizmoDrawable
             target.GetComponent<IDamagable>().TakeDamage(MeleeData.Damage);
         else
                         Debug.Log("No enemy hit");
-        Debug.Log(Data.WeaponName);
+        Debug.Log(Data.ItemName);
     }
     public void DrawGizmos(Transform ownerTransform)
     {

@@ -1,12 +1,17 @@
 public abstract class ItemData
 {
-    public ItemData(string weaponName, string weaponType, int weaponID)
+    // [중요] 리플렉션용 빈 생성자 추가
+    public ItemData() { }
+
+    public ItemData(string itemName, string itemType, int weaponID)
     {
-        WeaponName = weaponName;
-        WeaponType = weaponType;
-        WeaponID = weaponID;
+        ItemName = itemName;
+        ItemType = itemType;
+        ItemID = weaponID;
     }
-    public string WeaponName { get; private set; }
-    public string WeaponType { get; private set; }
-    public int WeaponID { get; private set; }
+
+    // [중요] GetField가 찾을 수 있도록 '필드'로 변경
+    public string ItemName;
+    public string ItemType;
+    public int ItemID;
 }

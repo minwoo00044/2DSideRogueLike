@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class MeleeWeaponData : WeaponData
 {
-    public MeleeWeaponData(string weaponName, string weaponType, int weaponID, float damage, Vector2 attackOffset, Vector2 boxSize) : base (weaponName, weaponType, weaponID,damage)
+    // 이제 부모 생성자가 존재하므로 에러가 나지 않음
+    public MeleeWeaponData() { }
+
+    public MeleeWeaponData(string weaponName, string weaponType, int weaponID, float damage, Vector2 attackOffset, Vector2 boxSize) : base(weaponName, weaponType, weaponID, damage)
     {
         AttackOffset = attackOffset;
         BoxSize = boxSize;
     }
 
-    public Vector2 AttackOffset { get; private set; }
-    public Vector2 BoxSize { get; private set; }
-
+    // [중요] 필드로 변경
+    public Vector2 AttackOffset;
+    public Vector2 BoxSize;
 }
