@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,15 +39,15 @@ public class PlayerController : MonoBehaviour
     public Action<PlayerController> OnDash;
     public Action<PlayerController> OnAttack;
 
-    [Header("ÀåÂø")]
-    public Weapon weapon;
+    //[Header("ÀåÂø")]
+    private Dictionary<ItemType, Item<ItemData>> items= new Dictionary<ItemType, Item<ItemData>>();
 
-    void Awake()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void Start()
+    private void Start()
     {
         currentStamina = maxStamina;
         if (staminaBar != null)
@@ -143,8 +143,12 @@ public class PlayerController : MonoBehaviour
         currentStamina -= 1;
         StartCoroutine(DashCoroutine(dashDirection.normalized));
     }
+    public void ChangeItem(ItemType key, Item<ItemData> val)
+    {
 
-    private IEnumerator DashCoroutine(Vector2 dashDirection)
+    }
+
+    private System.Collections.IEnumerator DashCoroutine(Vector2 dashDirection)
     {
         bool wasGrounded = isGrounded;
         isDashing = true;
@@ -204,7 +208,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (weapon is IGizmoDrawable drawableWeapon)
+        if (items[ItemType.Weapons] is IGizmoDrawable drawableWeapon)
         {
             drawableWeapon.DrawGizmos(this.transform);
         }

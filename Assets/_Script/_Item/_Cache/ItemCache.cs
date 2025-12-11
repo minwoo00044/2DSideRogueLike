@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class ItemCache
 {
-    private static Dictionary<int, ItemData> datas = new Dictionary<int, ItemData>();
+    private static Dictionary<string, ItemData> datas = new Dictionary<string, ItemData>();
     public static bool IsInitialized { get; private set; } = false;
 
     // 제네릭 메서드로 변경하여 확장성 확보 (T는 ItemData를 상속받아야 함)
@@ -75,9 +75,9 @@ public static class ItemCache
             }
 
             // 딕셔너리 추가 (중복 키 방지)
-            if (!datas.ContainsKey(instance.ItemID))
+            if (!datas.ContainsKey(instance.ItemName))
             {
-                datas.Add(instance.ItemID, instance);
+                datas.Add(instance.ItemName, instance);
                 Debug.Log($"LoadedItem:{instance.ItemName}");
             }
             else
@@ -90,7 +90,8 @@ public static class ItemCache
         Debug.Log($"[ItemCache] {typeof(T).Name} 데이터 로드 완료: {datas.Count}개");
     }
 
-    public static ItemData GetItem(int id)
+
+    public static ItemData GetItem(string itemName)
     {
         // 초기화가 안 되어 있다면 기본값으로 MeleeWeaponData 로드 시도 (상황에 따라 변경)
         if (!IsInitialized)
@@ -103,7 +104,7 @@ public static class ItemCache
             return null;
         }
 
-        if (datas.TryGetValue(id, out ItemData item))
+        if (datas.TryGetValue(itemName, out ItemData item))
         {
             return item;
         }

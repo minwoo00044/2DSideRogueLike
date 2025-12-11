@@ -41,4 +41,9 @@ public class MeleeWeapon : Weapon,IGizmoDrawable
 
         Gizmos.DrawWireCube(attackCenter, MeleeData.BoxSize);
     }
+
+    public override void Unequip()
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -6,6 +6,7 @@ public class AdvancedEquipmentController : MonoBehaviour
     public static AdvancedEquipmentController Instance { get; set; }
     [Header("연결 필수")]
     [SerializeField] private GameObject playerCharacter; // 인스펙터에서 플레이어 SPUM 캐릭터 연결
+    [SerializeField]private PlayerController playerController;  
 
     // 캐릭터의 핵심 스크립트 참조
     private SPUM_Prefabs _spumPrefabs;
@@ -66,7 +67,8 @@ public class AdvancedEquipmentController : MonoBehaviour
             Debug.LogWarning($"아이템 '{itemName}' (부위: {itemPartType})를 spumPackages에서 찾을 수 없습니다.");
             return;
         }
-
+        var itemData = ItemCache.GetItem(itemName);
+        //playerController.items[itemData.ItemType] = it
         // 2. 찾은 텍스처 데이터의 경로를 사용하여 캐릭터의 외형을 변경합니다.
         UpdateSprite(itemPartType, targetTextureData.Path);
 
