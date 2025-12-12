@@ -4,20 +4,20 @@ public enum ItemType
     Weapons,
     Armor,
 }
-public abstract class Item<T> where T : ItemData
+public class Item
 {
-    protected T Data { get; private set; }
+    protected ItemData Data { get; private set; }
     public PlayerController Owner { get; private set; }
-    public virtual void Equip(T data)
+    public Item(PlayerController owner)
+    {
+        Owner = owner;
+    }
+    public virtual void Equip(ItemData data)
     {
         if (data == null) return;
         Data = data;
     }
-
-    public abstract void Unequip();
-    public void Init(PlayerController owner)
+    public virtual void Unequip()
     {
-        if (owner == null) return;
-        Owner = owner;
-    }
+    }   
 }

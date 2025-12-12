@@ -1,13 +1,18 @@
 using UnityEngine;
 
-public abstract class Weapon : Item<WeaponData>, IWeapon
+public class Weapon : Item
 {
-    public override void Equip(WeaponData data)
+    public Weapon(PlayerController owner) : base(owner)
     {
     }
+
     public void Attack(PlayerController owner)
     {
+        if(Data == null) return;
         _Attack(owner);
     }
-    protected abstract void _Attack(PlayerController owner);
+    protected virtual void _Attack(PlayerController owner)
+    {
+
+    }
 }

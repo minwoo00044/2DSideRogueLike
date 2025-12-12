@@ -40,11 +40,13 @@ public class PlayerController : MonoBehaviour
     public Action<PlayerController> OnAttack;
 
     //[Header("ÀåÂø")]
-    private Dictionary<ItemType, Item<ItemData>> items= new Dictionary<ItemType, Item<ItemData>>();
-
+    private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
+    private PlayerDamageCalculator damageCalculator = new PlayerDamageCalculator();
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        items.Clear();
+        items.Add(ItemType.Weapons, new Weapon(this));
     }
 
     private void Start()
@@ -143,10 +145,6 @@ public class PlayerController : MonoBehaviour
         currentStamina -= 1;
         StartCoroutine(DashCoroutine(dashDirection.normalized));
     }
-    public void ChangeItem(ItemType key, Item<ItemData> val)
-    {
-
-    }
 
     private System.Collections.IEnumerator DashCoroutine(Vector2 dashDirection)
     {
@@ -206,6 +204,17 @@ public class PlayerController : MonoBehaviour
         transform.localScale = theScale;
     }
 
+    public void ChangeItem(ItemData data)
+    {
+        items[data.ItemType].Equip(data);
+    }
+    public void AddBuff(float plus, float multiple)
+    {
+        if(plus != 0)
+            damageCalculator.AddModifier("Buff_Flat", plus, false);
+        if(multiple != 0)
+            damageCalculator.AddModifier("Buff_Percent", multiple, true);
+    }
     private void OnDrawGizmos()
     {
         if ( !items.ContainsKey(ItemType.Weapons) || items[ItemType.Weapons] == null ) return;

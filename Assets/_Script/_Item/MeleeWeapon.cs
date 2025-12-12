@@ -3,10 +3,11 @@ using UnityEngine.InputSystem.XR;
 
 public class MeleeWeapon : Weapon,IGizmoDrawable
 {
+    public MeleeWeapon(PlayerController owner) : base(owner)
+    {
+    }
+
     public MeleeWeaponData MeleeData => Data as MeleeWeaponData;
-
-
-
     protected override void _Attack(PlayerController owner)
     {
         Vector2 currentPosition = owner.transform.position;
@@ -19,7 +20,7 @@ public class MeleeWeapon : Weapon,IGizmoDrawable
         if(target != null)
             target.GetComponent<IDamagable>().TakeDamage(MeleeData.Damage);
         else
-                        Debug.Log("No enemy hit");
+             Debug.Log("No enemy hit");
         Debug.Log(Data.ItemName);
     }
     public void DrawGizmos(Transform ownerTransform)
@@ -41,7 +42,13 @@ public class MeleeWeapon : Weapon,IGizmoDrawable
 
         Gizmos.DrawWireCube(attackCenter, MeleeData.BoxSize);
     }
-
+    public override void Equip(ItemData data)
+    {
+        base.Equip(data);
+        if (data == null) return;
+        if (Owner == null) return;
+        Owner.AddBuff(MeleeData.Damage, 0);
+    }
     public override void Unequip()
     {
         throw new System.NotImplementedException();
