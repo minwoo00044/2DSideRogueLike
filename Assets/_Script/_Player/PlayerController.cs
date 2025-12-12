@@ -208,6 +208,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if ( !items.ContainsKey(ItemType.Weapons) || items[ItemType.Weapons] == null ) return;
         if (items[ItemType.Weapons] is IGizmoDrawable drawableWeapon)
         {
             drawableWeapon.DrawGizmos(this.transform);

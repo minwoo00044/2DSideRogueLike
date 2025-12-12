@@ -9,19 +9,14 @@ public class _Tester : MonoBehaviour
     void Start()
     {
         // ScriptableObject가 아닌 일반 클래스라면 new로 생성 가능합니다.
-        MeleeTestWeaponData = new MeleeWeaponData("TestMelee", "Weapons", 0, 10, new Vector2(1f, 0.5f), new Vector2(1.5f, 1f));
+        MeleeTestWeaponData = new MeleeWeaponData("TestMelee", ItemType.Weapons, 0, 10, new Vector2(1f, 0.5f), new Vector2(1.5f, 1f));
         MeleeTestWeapon = new MeleeWeapon();
-        MeleeTestWeapon.Init(MeleeTestWeaponData);
 
-        // controller가 할당되었을 때만 무기를 장착시킵니다.
-        if (controller != null)
-        {
-            MeleeTestWeapon.Equip(controller);
-        }
+
         ItemCache.ReadData<MeleeWeaponData>("MeleeWeaponData");
 
         // 테스트
-        var item = ItemCache.GetItem(1001); // ID 예시
+        var item = ItemCache.GetItem("Sword_2"); // ID 예시
         if (item != null) Debug.Log(item.ItemName);
     }
 
