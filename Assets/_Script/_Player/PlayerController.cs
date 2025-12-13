@@ -47,6 +47,10 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         items.Clear();
         items.Add(ItemType.Weapons, new Weapon(this));
+        // 기존 코드
+        // OnAttack += (this)=> Debug.Log(items[ItemType.Weapons].Data.ItemName) ;
+
+        // 수정된 코드
     }
 
     private void Start()
@@ -96,7 +100,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             spumAnimationManager.PlayAnimation(PlayerState.ATTACK, 0);
-            OnAttack.Invoke(this);
+            OnAttack?.Invoke(this);
         }
 
         UpdateStaminaUI();

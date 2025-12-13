@@ -6,7 +6,7 @@ public enum ItemType
 }
 public class Item
 {
-    protected ItemData Data { get; private set; }
+    public ItemData Data { get; private set; }
     public PlayerController Owner { get; private set; }
     public Item(PlayerController owner)
     {

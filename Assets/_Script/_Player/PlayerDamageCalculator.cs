@@ -16,7 +16,7 @@ public class StatModifier
     }
 }
 
-public class PlayerDamageCalculator : MonoBehaviour
+public class PlayerDamageCalculator
 {
     public float BaseDamage = 10.0f;
 
