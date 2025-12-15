@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 public enum ItemType
 {
     Weapons,
     Armor,
 }
+[Serializable]
 public class Item
 {
     public ItemData Data { get; private set; }

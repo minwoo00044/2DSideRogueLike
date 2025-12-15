@@ -19,14 +19,14 @@ public class MeleeStrategy : IWeaponStrategy
         if (target != null)
             target.GetComponent<IDamagable>()?.TakeDamage(meleeData.Damage);
 
-        Debug.Log($"Melee Attack: {data.ItemName}");
+        Debug.Log($"Melee Attack: {data.ItemName} ");
     }
 
     public void DrawGizmos(Transform ownerTransform, ItemData data)
     {
         var meleeData = data as MeleeWeaponData;
         if (meleeData == null) return;
-
+        //Debug.Log($"{meleeData.AttackOffset.x},{meleeData.AttackOffset.y}");
         Gizmos.color = Color.red;
         float facingDirection = -Mathf.Sign(ownerTransform.localScale.x);
         Vector2 offset = new Vector2(meleeData.AttackOffset.x * facingDirection, meleeData.AttackOffset.y);

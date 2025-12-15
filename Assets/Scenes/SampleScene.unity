@@ -1681,6 +1681,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 446921055263318838, guid: 0bda45e1d82e24841b5fc715d755b750, type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 1469294323}
     - target: {fileID: 1953108757864197208, guid: 0bda45e1d82e24841b5fc715d755b750, type: 3}
       propertyPath: m_LocalScale.x
       value: 1

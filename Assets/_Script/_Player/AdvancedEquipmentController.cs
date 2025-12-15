@@ -31,6 +31,7 @@ public class AdvancedEquipmentController : MonoBehaviour
         // 캐릭터에서 핵심 스크립트들을 가져옵니다.
         _spumPrefabs = playerCharacter.GetComponent<SPUM_Prefabs>();
         _spumSpriteList = playerCharacter.GetComponent<SPUM_SpriteList>();
+        playerController.GetComponent<PlayerController>();
 
         if (_spumPrefabs == null || _spumSpriteList == null)
         {
@@ -43,7 +44,7 @@ public class AdvancedEquipmentController : MonoBehaviour
     /// </summary>
     /// <param name="itemName">찾고자 하는 아이템의 이름 (SpumTextureData의 Name)</param>
     /// <param name="itemPartType">아이템의 부위 (SpumTextureData의 PartType, 예: "Cloth", "Weapon")</param>
-    public void EquipItem(string itemName, string itemPartType)
+    public void EquipItem(string itemName)
     {
         if (_spumPrefabs == null) return;
 
@@ -52,7 +53,7 @@ public class AdvancedEquipmentController : MonoBehaviour
         foreach (var package in _spumPrefabs.spumPackages)
         {
             targetTextureData = package.SpumTextureData.FirstOrDefault(data =>
-                data.Name == itemName && data.PartType == itemPartType
+                data.Name == itemName
             );
 
             if (targetTextureData != null)
@@ -64,13 +65,19 @@ public class AdvancedEquipmentController : MonoBehaviour
         // 아이템 데이터를 찾지 못한 경우
         if (targetTextureData == null)
         {
-            Debug.LogWarning($"아이템 '{itemName}' (부위: {itemPartType})를 spumPackages에서 찾을 수 없습니다.");
+            Debug.LogWarning($"아이템 '{itemName}'를 spumPackages에서 찾을 수 없습니다.");
             return;
         }
         var itemData = ItemCache.GetItem(itemName);
+        if (itemData == null)
+        {
+            Debug.LogWarning($"아이템 '{itemName}'를 db에서 찾을 수 없습니다.");
+            return;
+        }
         //playerController.items[itemData.ItemType] = it
         // 2. 찾은 텍스처 데이터의 경로를 사용하여 캐릭터의 외형을 변경합니다.
-        UpdateSprite(itemPartType, targetTextureData.Path);
+        UpdateSprite(itemData.ItemType.ToString(), targetTextureData.Path);
+        playerController.ChangeItem(itemData);
 
         // 3. (선택적) 만약 이 장비에 고유한 애니메이션이 있다면 애니메이션도 교체합니다.
         // 예시: "GreatSword" 아이템은 "GreatSword_Attack" 애니메이션을 사용하도록 설정

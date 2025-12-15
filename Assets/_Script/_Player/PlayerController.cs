@@ -42,6 +42,9 @@ public class PlayerController : MonoBehaviour
     //[Header("ÀåÂø")]
     private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
     private PlayerDamageCalculator damageCalculator = new PlayerDamageCalculator();
+    public Weapon w;
+    public MeleeWeaponData d;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -211,6 +214,7 @@ public class PlayerController : MonoBehaviour
     public void ChangeItem(ItemData data)
     {
         items[data.ItemType].Equip(data);
+        d = data as MeleeWeaponData;
     }
     public void AddBuff(float plus, float multiple)
     {
@@ -222,10 +226,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         if ( !items.ContainsKey(ItemType.Weapons) || items[ItemType.Weapons] == null ) return;
-        if (items[ItemType.Weapons] is IGizmoDrawable drawableWeapon)
-        {
-            drawableWeapon.DrawGizmos(this.transform);
-        }
-
+        Weapon weapon = items[ItemType.Weapons] as Weapon;
+        weapon.DrawGizmos(transform);
     }
 }

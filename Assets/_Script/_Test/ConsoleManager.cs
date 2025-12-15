@@ -105,14 +105,13 @@ public class ConsoleManager : MonoBehaviour
     public bool EquipItem(string command)
     {
         var split = command.Split();
-        if(split.Length < 3 || split.Length >3)
+        if(split.Length < 2 || split.Length >2)
         {
             Debug.LogWarning("This is a command that cannot be performed.");
             return false;
         }
         var itemName = split[1];
-        var itemPartType = split[2];
-        AdvancedEquipmentController.Instance.EquipItem(itemName, itemPartType);
+        AdvancedEquipmentController.Instance.EquipItem(itemName);
         return true;
     }
 }

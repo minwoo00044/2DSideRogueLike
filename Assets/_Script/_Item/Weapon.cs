@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 // IGizmoDrawable 인터페이스도 Weapon이 구현해서 Strategy에게 넘겨줍니다.
 public class Weapon : Item, IGizmoDrawable
 {

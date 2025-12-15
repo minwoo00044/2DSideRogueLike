@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class MeleeWeaponData : WeaponData
 {
     // 이제 부모 생성자가 존재하므로 에러가 나지 않음
