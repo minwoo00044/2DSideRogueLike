@@ -6,7 +6,8 @@ using UnityEngine.InputSystem.LowLevel;
 public enum EState
 {
     Chase,
-    Die
+    Die,
+    Attack
 }
 public class StateMachine : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class StateMachine : MonoBehaviour
     {
         eStatePair.Add(EState.Chase, new ChaseState(this));
         eStatePair.Add(EState.Die, new DieState(this));
+        eStatePair.Add(EState.Attack, new AtkState(this));
         ChangeState(EState.Chase);
     }
     private void Update()

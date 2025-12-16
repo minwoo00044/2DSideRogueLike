@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamagable
 {
 
     [Header("컴포넌트 연결")]
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isFacingRight = false;
     private bool isDashing = false;
+    private bool isAttacking = false;
 
     public Action<PlayerController> OnDash;
     public Action<PlayerController> OnAttack;
@@ -89,7 +92,10 @@ public class PlayerController : MonoBehaviour
 
         if (moveInput > 0 && !isFacingRight) Flip();
         else if (moveInput < 0 && isFacingRight) Flip();
-
+        if (moveInput == 0)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        }
         if (Mathf.Abs(moveInput) > 0.1f)
             spumAnimationManager.PlayAnimation(PlayerState.MOVE, 0);
         else
@@ -100,15 +106,31 @@ public class PlayerController : MonoBehaviour
             HandleDash();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if  (Input.GetMouseButtonDown(0))
         {
-            spumAnimationManager.PlayAnimation(PlayerState.ATTACK, 0);
-            OnAttack?.Invoke(this);
+            if (Input.GetKeyDown(KeyCode.A) && !isAttacking)
+            {
+                StartCoroutine(AttackRoutine());
+            }
         }
 
         UpdateStaminaUI();
     }
+    IEnumerator AttackRoutine()
+    {
+        isAttacking = true;
+        float animDuration;
+        spumAnimationManager.PlayAnimation(PlayerState.ATTACK, 0, out animDuration);
 
+        float hitTiming = animDuration * 0.3f;
+        yield return new WaitForSeconds(hitTiming);
+
+        OnAttack?.Invoke(this);
+
+        yield return new WaitForSeconds(animDuration - hitTiming);
+        isAttacking = false;
+        spumAnimationManager.PlayAnimation(PlayerState.IDLE, 0);
+    }
     private void HandleStaminaRegen()
     {
         if (staminaRegenTimer > 0)
@@ -228,5 +250,10 @@ public class PlayerController : MonoBehaviour
         if ( !items.ContainsKey(ItemType.Weapons) || items[ItemType.Weapons] == null ) return;
         Weapon weapon = items[ItemType.Weapons] as Weapon;
         weapon.DrawGizmos(transform);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Debug.Log($"Player took {damage} damage.");
     }
 }

@@ -4,12 +4,14 @@ public class _Tester : MonoBehaviour
 {
     public PlayerController controller;
     public MeleeWeaponData MeleeTestWeaponData;
-
+    public Enemy testEnemy;
     void Start()
     {
         // ScriptableObject가 아닌 일반 클래스라면 new로 생성 가능합니다.
         //MeleeTestWeaponData = new MeleeWeaponData("TestMelee", ItemType.Weapons, 0, 10, new Vector2(1f, 0.5f), new Vector2(1.5f, 1f));
         //controller.ChangeItem(MeleeTestWeaponData);
+        EnemyData testEnemy = new EnemyData("Goblin", 2.5f, 1.0f, 1.5f, 50f, 10f);
+        this.testEnemy.EnemyData = testEnemy;
 
         ItemCache.ReadData<MeleeWeaponData>("MeleeWeaponData");
 

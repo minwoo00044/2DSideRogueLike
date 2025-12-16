@@ -158,6 +158,7 @@ public class SPUM_Prefabs : MonoBehaviour
         Animator animator = _anim;
         //Debug.Log(PlayState.ToString());
         var animations =  StateAnimationPairs[PlayState.ToString()];
+
         //Debug.Log(OverrideController[PlayState.ToString()].name);
         OverrideController[PlayState.ToString()] = animations[index];
         //Debug.Log( OverrideController[PlayState.ToString()].name);
@@ -240,5 +241,18 @@ public class SPUM_Prefabs : MonoBehaviour
         }
         
         return clip;
+    }
+    public bool IsAnimationPlaying(PlayerState state)
+    {
+        AnimatorStateInfo stateInfo = _anim.GetCurrentAnimatorStateInfo(0);
+        if (_anim.IsInTransition(0))
+        {
+            return true;
+        }
+        if (stateInfo.IsName(state.ToString()))
+        {
+            return stateInfo.normalizedTime < 1.0f;
+        }
+        return false;
     }
 }
