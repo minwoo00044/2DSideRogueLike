@@ -25,7 +25,6 @@ public class Enemy : MonoBehaviour, IDamagable
         }
     }
 
-    // ��Ÿ�� ��� ���� ü��
     [SerializeField]
     private float currentHealth;
     private StateMachine stateMachine;
@@ -53,7 +52,6 @@ public class Enemy : MonoBehaviour, IDamagable
     [SerializeField] private float maxHp;
     [SerializeField] private float atkDamage;
 
-    // �б� ���� ������Ƽ
     public string EnemyName => enemyName;
     public float MoveSpeed => moveSpeed;
     public float AtkRange => atkRange;
@@ -212,6 +210,12 @@ public class Enemy : MonoBehaviour, IDamagable
 
         // 점프 애니메이션 재생 (SPUM에 점프 모션이 있다면 사용, 없다면 MOVE 유지)
         // spum.PlayAnimation(PlayerState.OTHER, 0); // 예시: OTHER에 점프가 있다면
+    }
+
+    public bool IsObstacleAbove()
+    {
+        // 머리 위 장애물 체크 (거리 1.5f 정도)
+        return Physics2D.Raycast(transform.position, Vector2.up, 1.5f, groundLayer);
     }
 
     // 에디터에서 바닥 체크 범위 눈으로 보기 (디버깅용)

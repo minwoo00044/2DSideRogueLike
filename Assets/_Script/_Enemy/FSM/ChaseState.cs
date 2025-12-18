@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChaseState : State, IState
 {
-    private float _jumpCooldown = 1.0f; // Á¡ÇÁ ÄğÅ¸ÀÓ (¿¬¼Ó Á¡ÇÁ ¹æÁö)
+    private float _jumpCooldown = 1.0f; // ì í”„ ì¿¨íƒ€ì„ (ì—°ì† ì í”„ ë°©ì§€)
     private float _lastJumpTime;
 
     public ChaseState(StateMachine machine) : base(machine) { }
@@ -22,37 +22,37 @@ public class ChaseState : State, IState
         Vector2 targetPos = machine.target.position;
         Vector2 myPos = enemy.transform.position;
 
-        // 1. °ø°İ »ç°Å¸® Ã¼Å© (±âÁ¸ ·ÎÁ÷)
+        // 1. ê³µê²© ì‚¬ê±°ë¦¬ ì²´í¬ (ê¸°ì¡´ ë¡œì§)
         if (Vector2.Distance(myPos, targetPos) <= enemy.AtkRange)
         {
             machine.ChangeState(EState.Attack);
             return;
         }
 
-        // 2. ÀÌµ¿ ¹æÇâ °áÁ¤
+        // 2. ì´ë™ ë°©í–¥ ê²°ì •
         Vector2 dir = (targetPos - myPos).normalized;
         enemy.SetMoveDirection(dir);
 
-        // 3. ¡Ú Á¡ÇÁ ·ÎÁ÷ Ãß°¡ ¡Ú
-        // Á¶°Ç 1: ÇÃ·¹ÀÌ¾î°¡ ³ªº¸´Ù ÀÏÁ¤ ³ôÀÌ(1.5f) ÀÌ»ó À§¿¡ ÀÖ°í
-        // Á¶°Ç 2: ÀûÀÌ ¹Ù´Ú¿¡ ´ê¾Æ ÀÖ°í (IsGrounded)
-        // Á¶°Ç 3: Á¡ÇÁ ÄğÅ¸ÀÓÀÌ Áö³µ´Ù¸é
-        if (Time.time >= _lastJumpTime + _jumpCooldown && enemy.IsGrounded)
+        // 3. â˜… ì í”„ ë¡œì§ ì¶”ê°€ â˜…
+        // ì¡°ê±´ 1: í”Œë ˆì´ì–´ê°€ ë‚˜ë³´ë‹¤ ì¼ì • ë†’ì´(1.5f) ì´ìƒ ìœ„ì— ìˆê³ 
+        // ì¡°ê±´ 2: ì ì´ ë°”ë‹¥ì— ë‹¿ì•„ ìˆê³  (IsGrounded)
+        // ì¡°ê±´ 3: ì í”„ ì¿¨íƒ€ì„ì´ ì§€ë‚¬ë‹¤ë©´
+        if (Time.time >= _lastJumpTime + _jumpCooldown && enemy.IsGrounded && !enemy.IsObstacleAbove())
         {
-            // 1. ÇÃ·¹ÀÌ¾î°¡ ¶Ñ·ÇÇÏ°Ô ³ôÀº °÷¿¡ ÀÖ´Â °æ¿ì (±âÁ¸ ·ÎÁ÷)
+            // 1. í”Œë ˆì´ì–´ê°€ ëšœë ·í•˜ê²Œ ë†’ì€ ê³³ì— ìˆëŠ” ê²½ìš° (ê¸°ì¡´ ë¡œì§)
             if (machine.target.position.y > enemy.transform.position.y + 1.5f)
             {
-                // ÀÌ¶§´Â ÇÃ·¹ÀÌ¾î ³ôÀÌ¸¦ ¸ñÇ¥·Î ¶Ü
+                // ì´ë•ŒëŠ” í”Œë ˆì´ì–´ ë†’ì´ë¥¼ ëª©í‘œë¡œ ëœ€
                 enemy.AdaptiveJump(machine.target.position.y);
                 _lastJumpTime = Time.time;
             }
-            // 2. ÇÃ·¹ÀÌ¾î´Â °°Àº ³ôÀÌÁö¸¸, °¡´Â ±æ¿¡ 'Àå¾Ö¹°(¹ßÆÇ)'ÀÌ ÀÖ´Â °æ¿ì
+            // 2. í”Œë ˆì´ì–´ëŠ” ê°™ì€ ë†’ì´ì§€ë§Œ, ê°€ëŠ” ê¸¸ì— 'ì¥ì• ë¬¼(ë°œíŒ)'ì´ ìˆëŠ” ê²½ìš°
             else
             {
-                // ¹ßÆÇ ³ôÀÌ °¨Áö
+                // ë°œíŒ ë†’ì´ ê°ì§€
                 float? platformHeight = enemy.GetPlatformHeight();
 
-                // °¨ÁöµÈ ¹ßÆÇÀÌ ³» ¹ß¹Øº¸´Ù ³ô´Ù¸é Á¡ÇÁ
+                // ê°ì§€ëœ ë°œíŒì´ ë‚´ ë°œë°‘ë³´ë‹¤ ë†’ë‹¤ë©´ ì í”„
                 if (platformHeight.HasValue && platformHeight.Value > enemy.transform.position.y + 0.5f)
                 {
                     enemy.AdaptiveJump(platformHeight.Value);

@@ -8,29 +8,29 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour, IDamagable
 {
 
-    [Header("ÄÄÆ÷³ÍÆ® ¿¬°á")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private SPUM_Prefabs spumAnimationManager;
     [SerializeField] private Slider staminaBar;
     private Rigidbody2D rb;
 
 
-    [Header("¹°¸® ¸ÓÆ¼¸®¾ó ¼³Á¤")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private PhysicsMaterial2D normalFrictionMaterial;
     [SerializeField] private PhysicsMaterial2D zeroFrictionMaterial;
 
-    [Header("ÀÌµ¿ ¹× Á¡ÇÁ ¼³Á¤")]
+    [Header("ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float dashForce = 20f;
     [SerializeField] private float dashDuration = 0.2f;
 
-    [Header("½ºÅÂ¹Ì³Ê ¼³Á¤")]
+    [Header("ï¿½ï¿½ï¿½Â¹Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private float maxStamina = 3f;
     [SerializeField] private float staminaRegenRate = 2f;
     [SerializeField] private float staminaRegenDelay = 1f;
     private float currentStamina;
     private float staminaRegenTimer;
 
-    [Header("Áö¸é Ã¼Å© ¼³Á¤")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ Ã¼Å© ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded;
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     public Action<PlayerController> OnDash;
     public Action<PlayerController> OnAttack;
 
-    //[Header("ÀåÂø")]
+    //[Header("ï¿½ï¿½ï¿½ï¿½")]
     private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
     private PlayerDamageCalculator damageCalculator = new PlayerDamageCalculator();
     public Weapon w;
@@ -53,10 +53,10 @@ public class PlayerController : MonoBehaviour, IDamagable
         rb = GetComponent<Rigidbody2D>();
         items.Clear();
         items.Add(ItemType.Weapons, new Weapon(this));
-        // ±âÁ¸ ÄÚµå
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
         // OnAttack += (this)=> Debug.Log(items[ItemType.Weapons].Data.ItemName) ;
 
-        // ¼öÁ¤µÈ ÄÚµå
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
     }
 
     private void Start()
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour, IDamagable
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
 
         float moveInput = Input.GetAxis("Horizontal");
-        // --- ¼öÁ¤µÈ ºÎºÐ ---
+        // --- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ ---
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         if (moveInput > 0 && !isFacingRight) Flip();
@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour, IDamagable
 
         if  (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetKeyDown(KeyCode.A) && !isAttacking)
+            if (!isAttacking)
             {
                 StartCoroutine(AttackRoutine());
             }
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     {
         if (currentStamina < 1)
         {
-            Debug.Log("½ºÅÂ¹Ì³Ê°¡ ºÎÁ·ÇÕ´Ï´Ù!");
+            Debug.Log("ï¿½ï¿½ï¿½Â¹Ì³Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½!");
             return;
         }
 
@@ -160,14 +160,14 @@ public class PlayerController : MonoBehaviour, IDamagable
         {
             if (isGrounded) 
             {
-                // YÃà ¼Óµµ¸¦ ÃÊ±âÈ­ÇÏ¿© Á¡ÇÁ ³ôÀÌ¸¦ ÀÏÁ¤ÇÏ°Ô ¸¸µê
+                // Yï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
                 rb.AddForce(Vector2.up * dashForce, ForceMode2D.Impulse);
 
-                // Á¡ÇÁ ¾Ö´Ï¸ÞÀÌ¼Ç È£Ãâ ·ÎÁ÷
-                // spumAnimationManager.PlayAnimation(PlayerState.OTHER, 1); // ¿¹½Ã
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                // spumAnimationManager.PlayAnimation(PlayerState.OTHER, 1); // ï¿½ï¿½ï¿½ï¿½
             }
-            return; // Á¡ÇÁ Ã³¸® ÈÄ ÇÔ¼ö Á¾·á
+            return; // ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
         if (vInput < 0 && hInput == 0 && isGrounded) return;
 
@@ -196,11 +196,11 @@ public class PlayerController : MonoBehaviour, IDamagable
         float afterimageTimer = 0f;
         while (afterimageTimer < dashDuration)
         {
-            // 1. Ç®¿¡¼­ ÀÜ»ó ÇÏ³ª¸¦ °¡Á®¿Â´Ù
+            // 1. Ç®ï¿½ï¿½ï¿½ï¿½ ï¿½Ü»ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½
             AfterimageSprite afterimage = AfterimagePool.instance.GetFromPool();
             if (afterimage != null)
             {
-                // 2. ÇöÀç ÇÃ·¹ÀÌ¾îÀÇ ¸ð½ÀÀ¸·Î ¼¼ÆÃÇÑ´Ù
+                // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
                 afterimage.Setup(transform);
             }
 
