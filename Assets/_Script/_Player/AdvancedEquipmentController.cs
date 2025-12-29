@@ -1,14 +1,14 @@
 using UnityEngine;
-using System.Linq; // LINQ¸¦ »ç¿ëÇÏ±â À§ÇØ Ãß°¡
+using System.Linq; // LINQë¥¼ ì‚¬ìš©í•˜ê¸° ìœ„í•´ ì¶”ê°€
 
 public class AdvancedEquipmentController : MonoBehaviour
 {
     public static AdvancedEquipmentController Instance { get; set; }
-    [Header("¿¬°á ÇÊ¼ö")]
-    [SerializeField] private GameObject playerCharacter; // ÀÎ½ºÆåÅÍ¿¡¼­ ÇÃ·¹ÀÌ¾î SPUM Ä³¸¯ÅÍ ¿¬°á
-    [SerializeField]private PlayerController playerController;  
+    [Header("ì»´í¬ë„ŒíŠ¸ ì—°ê²°")]
+    [SerializeField] private GameObject playerCharacter; // ì¸ìŠ¤í™í„°ì—ì„œ í”Œë ˆì´ì–´ SPUM ìºë¦­í„° í• ë‹¹
+    [SerializeField]private PlayerController playerController;
 
-    // Ä³¸¯ÅÍÀÇ ÇÙ½É ½ºÅ©¸³Æ® ÂüÁ¶
+    // ìºë¦­í„°ì— ë¶™ì€ ìŠ¤í¬ë¦½íŠ¸ ì°¸ì¡°
     private SPUM_Prefabs _spumPrefabs;
     private SPUM_SpriteList _spumSpriteList;
 
@@ -24,31 +24,30 @@ public class AdvancedEquipmentController : MonoBehaviour
         }
         if (playerCharacter == null)
         {
-            Debug.LogError("Player Character°¡ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("Player Characterê°€ í• ë‹¹ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             return;
         }
 
-        // Ä³¸¯ÅÍ¿¡¼­ ÇÙ½É ½ºÅ©¸³Æ®µéÀ» °¡Á®¿É´Ï´Ù.
+        // ìºë¦­í„°ì—ê²Œì„œ SPUM ìŠ¤í¬ë¦½íŠ¸ë“¤ì„ ê°€ì ¸ì˜µë‹ˆë‹¤.
         _spumPrefabs = playerCharacter.GetComponent<SPUM_Prefabs>();
         _spumSpriteList = playerCharacter.GetComponent<SPUM_SpriteList>();
         playerController.GetComponent<PlayerController>();
 
         if (_spumPrefabs == null || _spumSpriteList == null)
         {
-            Debug.LogError("Ä³¸¯ÅÍ¿¡¼­ SPUM_Prefabs ¶Ç´Â SPUM_SpriteList¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("ìºë¦­í„°ì—ì„œ SPUM_Prefabs ë˜ëŠ” SPUM_SpriteListë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
         }
     }
 
     /// <summary>
-    /// ÁöÁ¤µÈ ÀÌ¸§ÀÇ ¾ÆÀÌÅÛÀ¸·Î Àåºñ¸¦ ±³Ã¼ÇÏ´Â ¸ŞÀÎ ÇÔ¼ö
+    /// ì•„ì´í…œ ì´ë¦„ì„ ì´ìš©í•´ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ êµì²´í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
-    /// <param name="itemName">Ã£°íÀÚ ÇÏ´Â ¾ÆÀÌÅÛÀÇ ÀÌ¸§ (SpumTextureDataÀÇ Name)</param>
-    /// <param name="itemPartType">¾ÆÀÌÅÛÀÇ ºÎÀ§ (SpumTextureDataÀÇ PartType, ¿¹: "Cloth", "Weapon")</param>
+    /// <param name="itemName">ì°¾ê³ ì í•˜ëŠ” ì•„ì´í…œ ì´ë¦„ (SpumTextureDataì˜ Name)</param>
     public void EquipItem(string itemName)
     {
         if (_spumPrefabs == null) return;
 
-        // 1. ¸ğµç ÆĞÅ°Áö¸¦ µÚÁ®¼­ ¿øÇÏ´Â ¾ÆÀÌÅÛÀÇ ÅØ½ºÃ³ µ¥ÀÌÅÍ¸¦ Ã£½À´Ï´Ù.
+        // 1. ëª¨ë“  íŒ¨í‚¤ì§€ë¥¼ ë’¤ì ¸ì„œ ì›í•˜ëŠ” ì•„ì´í…œ í…ìŠ¤ì²˜ ë°ì´í„°ë¥¼ ì°¾ìŠµë‹ˆë‹¤.
         SpumTextureData targetTextureData = null;
         foreach (var package in _spumPrefabs.spumPackages)
         {
@@ -58,61 +57,61 @@ public class AdvancedEquipmentController : MonoBehaviour
 
             if (targetTextureData != null)
             {
-                break; // ¾ÆÀÌÅÛÀ» Ã£¾ÒÀ¸¸é ·çÇÁ Á¾·á
+                break; // ë°ì´í„°ë¥¼ ì°¾ì•˜ìœ¼ë©´ ë°˜ë³µ ì¢…ë£Œ
             }
         }
 
-        // ¾ÆÀÌÅÛ µ¥ÀÌÅÍ¸¦ Ã£Áö ¸øÇÑ °æ¿ì
+        // ë°ì´í„°ë¥¼ ì°¾ì§€ ëª»í•œ ê²½ìš°
         if (targetTextureData == null)
         {
-            Debug.LogWarning($"¾ÆÀÌÅÛ '{itemName}'¸¦ spumPackages¿¡¼­ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogWarning($"ì•„ì´í…œ '{itemName}'ì„(ë¥¼) spumPackagesì—ì„œ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
         var itemData = ItemCache.GetItem(itemName);
         if (itemData == null)
         {
-            Debug.LogWarning($"¾ÆÀÌÅÛ '{itemName}'¸¦ db¿¡¼­ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogWarning($"ì•„ì´í…œ '{itemName}'ì„(ë¥¼) dbì—ì„œ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
         //playerController.items[itemData.ItemType] = it
-        // 2. Ã£Àº ÅØ½ºÃ³ µ¥ÀÌÅÍÀÇ °æ·Î¸¦ »ç¿ëÇÏ¿© Ä³¸¯ÅÍÀÇ ¿ÜÇüÀ» º¯°æÇÕ´Ï´Ù.
+        // 2. ì°¾ì€ í…ìŠ¤ì²˜ ë°ì´í„°ì˜ ê²½ë¡œë¥¼ ì´ìš©í•´ ìºë¦­í„°ì˜ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
         UpdateSprite(itemData.ItemType.ToString(), targetTextureData.Path);
         playerController.ChangeItem(itemData);
 
-        // 3. (¼±ÅÃÀû) ¸¸¾à ÀÌ Àåºñ¿¡ °íÀ¯ÇÑ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ÀÖ´Ù¸é ¾Ö´Ï¸ŞÀÌ¼Çµµ ±³Ã¼ÇÕ´Ï´Ù.
-        // ¿¹½Ã: "GreatSword" ¾ÆÀÌÅÛÀº "GreatSword_Attack" ¾Ö´Ï¸ŞÀÌ¼ÇÀ» »ç¿ëÇÏµµ·Ï ¼³Á¤
-        // ÀÌ ºÎºĞÀº °ÔÀÓÀÇ ±âÈ¹¿¡ µû¶ó º¹ÀâÇÏ°Ô ±¸ÇöµÉ ¼ö ÀÖ½À´Ï´Ù.
-        // ¿©±â¼­´Â °£´ÜÈ÷ ÀÌ¸§À¸·Î °ü·Ã ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Ã£´Â ¿¹½Ã¸¦ º¸¿©Áİ´Ï´Ù.
+        // 3. (ì„ íƒì ) í•´ë‹¹ ë¬´ê¸°ì˜ ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì´ ìˆë‹¤ë©´ ì• ë‹ˆë©”ì´ì…˜ë„ êµì²´í•©ë‹ˆë‹¤.
+        // ì˜ˆì‹œ: "GreatSword" ì°©ìš© ì‹œ "GreatSword_Attack" ì• ë‹ˆë©”ì´ì…˜ì´ ë“±ë¡ë˜ë„ë¡ ì„¤ì •
+        // ì´ ë¶€ë¶„ì€ ì •í•´ì§„ ë„¤ì´ë° ê·œì¹™ì— ë”°ë¼ êµ¬í˜„í•˜ì‹œë©´ ë  ê²ƒ ê°™ìŠµë‹ˆë‹¤.
+        // ì—¬ê¸°ì„œëŠ” ë‹¨ìˆœíˆ ì•„ì´í…œ ì´ë¦„ì´ í¬í•¨ëœ ì• ë‹ˆë©”ì´ì…˜ì„ ì°¾ì•„ ë®ì–´ì“°ë„ë¡ í•˜ê² ìŠµë‹ˆë‹¤.
         UpdateAnimation(itemName);
 
-        Debug.Log($"'{itemName}' ÀåÂø ¿Ï·á!");
+        Debug.Log($"'{itemName}' ì¥ì°© ì™„ë£Œ!");
     }
 
     /// <summary>
-    /// Æ¯Á¤ ºÎÀ§ÀÇ ½ºÇÁ¶óÀÌÆ®¸¦ »õ·Î¿î °æ·Î·Î ¾÷µ¥ÀÌÆ®ÇÏ°í Àû¿ëÇÕ´Ï´Ù.
+    /// íŠ¹ì • íŒŒì¸  íƒ€ì…ì˜ ë¦¬ì†ŒìŠ¤ ê²½ë¡œë¥¼ ì—…ë°ì´íŠ¸í•˜ê³  ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ êµì²´í•©ë‹ˆë‹¤.
     /// </summary>
     private void UpdateSprite(string partType, string resourcePath)
     {
-        // partType¿¡ µû¶ó ÀûÀıÇÑ °æ·Î ¸®½ºÆ®¸¦ ¼±ÅÃÇÕ´Ï´Ù.
+        // partTypeì— ë§ëŠ” ë¬¸ìì—´ ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
         var pathList = GetPathListByPartType(partType);
         if (pathList == null)
         {
-            Debug.LogError($"Áö¿øÇÏÁö ¾Ê´Â ÆÄÃ÷ Å¸ÀÔÀÔ´Ï´Ù: {partType}");
+            Debug.LogError($"ì˜¬ë°”ë¥´ì§€ ì•Šì€ íŒŒì¸  íƒ€ì…ì…ë‹ˆë‹¤: {partType}");
             return;
         }
 
-        // °æ·Î¸¦ ¾÷µ¥ÀÌÆ®ÇÏ°í ResyncData·Î ¿ÜÇüÀ» »õ·Î°íÄ§ÇÕ´Ï´Ù.
+        // ê²½ë¡œë¥¼ ì—…ë°ì´íŠ¸í•˜ê³  ResyncDataë¥¼ í˜¸ì¶œí•´ ìƒˆë¡œê³ ì¹¨í•©ë‹ˆë‹¤.
         pathList.Clear();
         pathList.Add(resourcePath);
         _spumSpriteList.ResyncData();
     }
 
     /// <summary>
-    /// ¾ÆÀÌÅÛ ÀÌ¸§°ú °ü·ÃµÈ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Ã£¾Æ ±³Ã¼ÇÕ´Ï´Ù.
+    /// ì•„ì´í…œ ì´ë¦„ì´ í¬í•¨ëœ ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì„ ì°¾ì•„ êµì²´í•©ë‹ˆë‹¤.
     /// </summary>
     private void UpdateAnimation(string itemName)
     {
-        // ¿¹½Ã: "GreatSword" ¶ó´Â ÀÌ¸§ÀÌ Æ÷ÇÔµÈ °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Å¬¸³À» Ã£¾Æ¼­ ±³Ã¼
+        // ì˜ˆì‹œ: "GreatSword" ê°™ì€ ì´ë¦„ì´ í¬í•¨ëœ ê³µê²© ì• ë‹ˆë©”ì´ì…˜ í´ë¦½ì„ ì°¾ì•„ì„œ êµì²´
         SpumAnimationClip newAttackClipData = null;
         foreach (var package in _spumPrefabs.spumPackages)
         {
@@ -127,11 +126,11 @@ public class AdvancedEquipmentController : MonoBehaviour
             var animClip = Resources.Load<AnimationClip>(newAttackClipData.ClipPath.Replace(".anim", ""));
             if (animClip != null)
             {
-                // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ¸ñ·ÏÀÇ Ã¹ ¹øÂ°¸¦ »õ·Î¿î Å¬¸³À¸·Î ±³Ã¼
+                // ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ë¦¬ìŠ¤íŠ¸ì˜ ì²« ë²ˆì§¸ë¥¼ ìƒˆë¡œìš´ í´ë¦½ìœ¼ë¡œ êµì²´
                 if (_spumPrefabs.ATTACK_List.Count > 0)
                 {
                     _spumPrefabs.ATTACK_List[0] = animClip;
-                    Debug.Log($"°ø°İ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» '{newAttackClipData.Name}'À¸·Î ±³Ã¼Çß½À´Ï´Ù.");
+                    Debug.Log($"ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì„ '{newAttackClipData.Name}'(ìœ¼)ë¡œ êµì²´í–ˆìŠµë‹ˆë‹¤.");
                 }
             }
         }
@@ -139,7 +138,7 @@ public class AdvancedEquipmentController : MonoBehaviour
 
 
     /// <summary>
-    /// ÆÄÃ÷ Å¸ÀÔ ¹®ÀÚ¿­¿¡ µû¶ó ÇØ´çÇÏ´Â °æ·Î ¸®½ºÆ®¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
+    /// íŒŒì¸  íƒ€ì… ë¬¸ìì—´ì— ëŒ€ì‘í•˜ëŠ” ë¬¸ìì—´ ë¦¬ìŠ¤íŠ¸ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
     /// </summary>
     private System.Collections.Generic.List<string> GetPathListByPartType(string partType)
     {
@@ -163,20 +162,20 @@ public class AdvancedEquipmentController : MonoBehaviour
     }
 
 
-    // ----- Å×½ºÆ®¿ë ÄÚµå -----
+    // ----- í…ŒìŠ¤íŠ¸ìš© ì½”ë“œ -----
     void Update()
     {
-        //// '1' Å°¸¦ ´­·¯ 'Cloth_5' ¶ó´Â ÀÌ¸§ÀÇ ¿Ê ÀåÂø ½Ãµµ
+        //// '1' í‚¤ë¥¼ ëˆŒëŸ¬ 'Cloth_5' ë¼ëŠ” ì´ë¦„ì˜ ì˜· ì¥ì°© ì‹œë„
         //if (Input.GetKeyDown(KeyCode.Alpha1))
         //{
-        //    // ÀÌ ÀÌ¸§Àº SpumPackage ³»ÀÇ SpumTextureData¿¡ Á¤ÀÇµÈ Name°ú ÀÏÄ¡ÇØ¾ß ÇÕ´Ï´Ù.
-        //    EquipItem("Cloth_5", "Cloth");
+        //    // íŒ© ì´ë¦„ì˜ SpumPackage ì•ˆì— SpumTextureDataì— ì •ì˜ëœ Nameê³¼ ì¼ì¹˜í•´ì•¼ í•©ë‹ˆë‹¤.
+        //    EquipItem("Cloth_5");
         //}
 
-        //// '2' Å°¸¦ ´­·¯ 'Weapon_2' ¶ó´Â ÀÌ¸§ÀÇ ¹«±â ÀåÂø ½Ãµµ
+        //// '2' í‚¤ë¥¼ ëˆŒëŸ¬ 'Weapon_2' ë¼ëŠ” ì´ë¦„ì˜ ë¬´ê¸° ì¥ì°© ì‹œë„
         //if (Input.GetKeyDown(KeyCode.Alpha2))
         //{
-        //    EquipItem("Sword_2", "Weapons");
+        //    EquipItem("Sword_2");
         //}
     }
 }

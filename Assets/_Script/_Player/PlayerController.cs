@@ -8,29 +8,29 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour, IDamagable
 {
 
-    [Header("������Ʈ ����")]
+    [Header("컴포넌트 설정")]
     [SerializeField] private SPUM_Prefabs spumAnimationManager;
     [SerializeField] private Slider staminaBar;
     private Rigidbody2D rb;
 
 
-    [Header("���� ��Ƽ���� ����")]
+    [Header("물리 재질 설정")]
     [SerializeField] private PhysicsMaterial2D normalFrictionMaterial;
     [SerializeField] private PhysicsMaterial2D zeroFrictionMaterial;
 
-    [Header("�̵� �� ���� ����")]
+    [Header("이동 및 대시 설정")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float dashForce = 20f;
     [SerializeField] private float dashDuration = 0.2f;
 
-    [Header("���¹̳� ����")]
+    [Header("스태미나 설정")]
     [SerializeField] private float maxStamina = 3f;
     [SerializeField] private float staminaRegenRate = 2f;
     [SerializeField] private float staminaRegenDelay = 1f;
     private float currentStamina;
     private float staminaRegenTimer;
 
-    [Header("���� üũ ����")]
+    [Header("지면 체크 설정")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded;
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     public Action<PlayerController> OnDash;
     public Action<PlayerController> OnAttack;
 
-    //[Header("����")]
+    //[Header("아이템")]
     private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
     private PlayerDamageCalculator damageCalculator = new PlayerDamageCalculator();
     public Weapon w;
@@ -53,10 +53,10 @@ public class PlayerController : MonoBehaviour, IDamagable
         rb = GetComponent<Rigidbody2D>();
         items.Clear();
         items.Add(ItemType.Weapons, new Weapon(this));
-        // ���� �ڵ�
+        // 초기화 코드
         // OnAttack += (this)=> Debug.Log(items[ItemType.Weapons].Data.ItemName) ;
 
-        // ������ �ڵ�
+        // 이벤트 리스너 설정
     }
 
     private void Start()
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour, IDamagable
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
 
         float moveInput = Input.GetAxis("Horizontal");
-        // --- ������ �κ� ---
+        // --- 이동 처리 ---
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         if (moveInput > 0 && !isFacingRight) Flip();
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     {
         if (currentStamina < 1)
         {
-            Debug.Log("���¹̳ʰ� �����մϴ�!");
+            Debug.Log("스태미나가 부족합니다!");
             return;
         }
 
@@ -160,14 +160,14 @@ public class PlayerController : MonoBehaviour, IDamagable
         {
             if (isGrounded) 
             {
-                // Y�� �ӵ��� �ʱ�ȭ�Ͽ� ���� ���̸� �����ϰ� ����
+                // Y축 속도를 초기화하여 일정 높이 점프 보장
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
                 rb.AddForce(Vector2.up * dashForce, ForceMode2D.Impulse);
 
-                // ���� �ִϸ��̼� ȣ�� ����
-                // spumAnimationManager.PlayAnimation(PlayerState.OTHER, 1); // ����
+                // 대시 애니메이션 호출 예시
+                // spumAnimationManager.PlayAnimation(PlayerState.OTHER, 1); // 점프
             }
-            return; // ���� ó�� �� �Լ� ����
+            return; // 로직 처리 후 리턴
         }
         if (vInput < 0 && hInput == 0 && isGrounded) return;
 
@@ -196,11 +196,11 @@ public class PlayerController : MonoBehaviour, IDamagable
         float afterimageTimer = 0f;
         while (afterimageTimer < dashDuration)
         {
-            // 1. Ǯ���� �ܻ� �ϳ��� �����´�
+            // 1. 풀에서 잔상 가져오기
             AfterimageSprite afterimage = AfterimagePool.instance.GetFromPool();
             if (afterimage != null)
             {
-                // 2. ���� �÷��̾��� ������� �����Ѵ�
+                // 2. 잔상 설정 (현재 위치 등)
                 afterimage.Setup(transform);
             }
 

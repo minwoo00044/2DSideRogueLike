@@ -7,7 +7,7 @@ public class _Tester : MonoBehaviour
     public Enemy testEnemy;
     void Start()
     {
-        // ScriptableObject°¡ ¾Æ´Ñ ÀÏ¹İ Å¬·¡½º¶ó¸é new·Î »ı¼º °¡´ÉÇÕ´Ï´Ù.
+        // ScriptableObjectê°€ ì•„ë‹Œ ì¼ë°˜ í´ë˜ìŠ¤ë¼ë©´ newë¡œ ìƒì„± ê°€ëŠ¥í•©ë‹ˆë‹¤.
         //MeleeTestWeaponData = new MeleeWeaponData("TestMelee", ItemType.Weapons, 0, 10, new Vector2(1f, 0.5f), new Vector2(1.5f, 1f));
         //controller.ChangeItem(MeleeTestWeaponData);
         EnemyData testEnemy = new EnemyData("Goblin", 2.5f, 1.0f, 1.5f, 50f, 10f);
@@ -15,8 +15,8 @@ public class _Tester : MonoBehaviour
 
         ItemCache.ReadData<MeleeWeaponData>("MeleeWeaponData");
 
-        // Å×½ºÆ®
-        var item = ItemCache.GetItem("Sword_2"); // ID ¿¹½Ã
+        // í…ŒìŠ¤íŠ¸
+        var item = ItemCache.GetItem("Sword_2"); // ID ì˜ˆì‹œ
         if (item != null) Debug.Log(item.ItemName);
     }
 
@@ -34,14 +34,14 @@ public class _Tester : MonoBehaviour
 
     //    Vector2 currentPosition = controller.transform.position;
 
-    //    // 1. Ä³¸¯ÅÍÀÇ ÇöÀç localScale.x °ªÀ» ÀÌ¿ëÇØ ¹Ù¶óº¸´Â ¹æÇâÀ» ±¸ÇÕ´Ï´Ù. (¿À¸¥ÂÊ: 1, ¿ŞÂÊ: -1)
+    //    // 1. ìºë¦­í„°ì˜ í˜„ì¬ localScale.x ê°’ì„ ì´ìš©í•´ ë°”ë¼ë³´ëŠ” ë°©í–¥ì„ êµ¬í•©ë‹ˆë‹¤. (ì˜¤ë¥¸ìª½: 1, ì™¼ìª½: -1)
     //    float facingDirection = -Mathf.Sign(controller.transform.localScale.x);
 
-    //    // 2. ¹æÇâÀ» Àû¿ëÇÑ »õ·Î¿î °ø°İ ¿ÀÇÁ¼ÂÀ» °è»êÇÕ´Ï´Ù.
-    //    // AttackOffset.x¿¡ facingDirectionÀ» °öÇØÁà¼­ Ä³¸¯ÅÍ°¡ ¿ŞÂÊÀ» º¸¸é x ¿ÀÇÁ¼ÂÀÌ À½¼ö°¡ µÇµµ·Ï ÇÕ´Ï´Ù.
+    //    // 2. ë°©í–¥ì„ ì ìš©í•œ ìƒˆë¡œìš´ ê³µê²© ì˜¤í”„ì…‹ì„ ê³„ì‚°í•©ë‹ˆë‹¤.
+    //    // AttackOffset.xì— facingDirectionì„ ê³±í•´ì¤˜ì„œ ìºë¦­í„°ê°€ ì™¼ìª½ì„ ë³´ë©´ x ì˜¤í”„ì…‹ì´ ìŒìˆ˜ê°€ ë˜ë„ë¡ í•©ë‹ˆë‹¤.
     //    Vector2 offset = new Vector2(MeleeTestWeaponData.AttackOffset.x * facingDirection, MeleeTestWeaponData.AttackOffset.y);
 
-    //    // 3. ÃÖÁ¾ °ø°İ Áß½É À§Ä¡¸¦ °è»êÇÕ´Ï´Ù.
+    //    // 3. ìµœì¢… ê³µê²© ì¤‘ì‹¬ ìœ„ì¹˜ë¥¼ ê³„ì‚°í•©ë‹ˆë‹¤.
     //    Vector2 attackCenter = currentPosition + offset;
 
     //    Gizmos.DrawWireCube(attackCenter, MeleeTestWeaponData.BoxSize);

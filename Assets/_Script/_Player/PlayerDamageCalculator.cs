@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// [ÇÙ½É] °ªÀ» ´ãÀ» ÀÛÀº ±×¸©À» ¸¸µì´Ï´Ù.
-// ´©°¡ Áá´ÂÁö(Source)¿Í °ª(Value)À» ÇÔ²² ±â¾ïÇÕ´Ï´Ù.
+// [í•µì‹¬] ê°’ì„ ë‹´ì„ ì‘ì€ ê·¸ë¦‡ì„ ë§Œë“­ë‹ˆë‹¤.
+// ëˆ„ê°€ ì¤¬ëŠ”ì§€(Source)ì™€ ê°’(Value)ì„ í•¨ê»˜ ê¸°ì–µí•©ë‹ˆë‹¤.
 [System.Serializable]
 public class StatModifier
 {
-    public string Source; // ¿¹: "IronRing", "FireBuff"
-    public float Value;   // ¿¹: 10.0f, 0.5f
+    public string Source; // ì˜ˆ: "IronRing", "FireBuff"
+    public float Value;   // ì˜ˆ: 10.0f, 0.5f
 
     public StatModifier(string source, float value)
     {
@@ -20,19 +20,19 @@ public class PlayerDamageCalculator
 {
     public float BaseDamage = 10.0f;
 
-    // Dictionary ´ë½Å List¸¦ »ç¿ëÇÕ´Ï´Ù.
-    // List´Â ¼ø¼­°¡ ÀÖ°í, ¶È°°Àº ³»¿ëÀÌ ¿©·¯ °³ µé¾î¿Íµµ »ó°ü¾ø½À´Ï´Ù. (Áßº¹ Çã¿ë)
-    [SerializeField] // À¯´ÏÆ¼ ÀÎ½ºÆåÅÍ¿¡¼­ º¸·Á°í ²û
+    // Dictionary ëŒ€ì‹  Listë¥¼ ì‚¬ìš©í•©ë‹ˆë‹¤.
+    // ListëŠ” ìˆœì„œê°€ ìˆê³ , ë˜‘ê°™ì€ ë‚´ìš©ì´ ì—¬ëŸ¬ ê°œ ë“¤ì–´ì™€ë„ ìƒê´€ì—†ìŠµë‹ˆë‹¤. (ì¤‘ë³µ í—ˆìš©)
+    [SerializeField] // ìœ ë‹ˆí‹° ì¸ìŠ¤í™í„°ì—ì„œ ë³´ë ¤ê³  ë”
     private List<StatModifier> _flatModifiers = new List<StatModifier>();
 
     [SerializeField]
     private List<StatModifier> _percentModifiers = new List<StatModifier>();
 
-    // 1. ¹öÇÁ/¾ÆÀÌÅÛ Ãß°¡
+    // 1. ë²„í”„/ì•„ì´í…œ ì¶”ê°€
     public void AddModifier(string sourceName, float value, bool isPercent)
     {
-        // µñ¼Å³Ê¸®Ã³·³ "ÀÌ¹Ì ÀÖ³ª?" °Ë»çÇÒ ÇÊ¿ä°¡ ¾ø½À´Ï´Ù.
-        // ±×³É ¸®½ºÆ®¿¡ ¾³ Áı¾î³ÖÀ¸¸é µË´Ï´Ù.
+        // ë”•ì…”ë„ˆë¦¬ì²˜ëŸ¼ "ì´ë¯¸ ìˆë‚˜?" ê²€ì‚¬í•  í•„ìš”ê°€ ì—†ìŠµë‹ˆë‹¤.
+        // ê·¸ëƒ¥ ë¦¬ìŠ¤íŠ¸ì— ì“± ì§‘ì–´ë„£ìœ¼ë©´ ë©ë‹ˆë‹¤.
         StatModifier newMod = new StatModifier(sourceName, value);
 
         if (isPercent)
@@ -40,27 +40,27 @@ public class PlayerDamageCalculator
         else
             _flatModifiers.Add(newMod);
 
-        // (¼±ÅÃ) ¿©±â¼­ CalculateDamage()¸¦ ¹Ì¸® È£ÃâÇØ¼­ Ä³½ÌÇØµµ µË´Ï´Ù.
+        // (ì„ íƒ) ì—¬ê¸°ì„œ CalculateDamage()ë¥¼ ë¯¸ë¦¬ í˜¸ì¶œí•´ì„œ ìºì‹±í•´ë„ ë©ë‹ˆë‹¤.
     }
 
-    // 2. ¹öÇÁ/¾ÆÀÌÅÛ Á¦°Å (¿©±â°¡ Á¶±İ ´Ù¸§)
+    // 2. ë²„í”„/ì•„ì´í…œ ì œê±° (ì—¬ê¸°ê°€ ì¡°ê¸ˆ ë‹¤ë¦„)
     public void RemoveModifier(string sourceName)
     {
-        // ¸®½ºÆ®´Â Å°(Key)°¡ ¾øÀ¸¹Ç·Î, ÇÏ³ª¾¿ °Ë»çÇØ¼­ ÀÌ¸§ÀÌ °°Àº ³ğÀ» Ã£¾Æ Áö¿ö¾ß ÇÕ´Ï´Ù.
+        // ë¦¬ìŠ¤íŠ¸ëŠ” í‚¤(Key)ê°€ ì—†ìœ¼ë¯€ë¡œ, í•˜ë‚˜ì”© ê²€ì‚¬í•´ì„œ ì´ë¦„ì´ ê°™ì€ ë†ˆì„ ì°¾ì•„ ì§€ì›Œì•¼ í•©ë‹ˆë‹¤.
 
-        // [¿É¼Ç A] ÀÌ¸§ÀÌ °°Àº °É ÀüºÎ ´Ù Áö¿î´Ù. (¹öÇÁ ÇØÁ¦ ½Ã ÀûÇÕ)
+        // [ì˜µì…˜ A] ì´ë¦„ì´ ê°™ì€ ê±¸ ì „ë¶€ ë‹¤ ì§€ìš´ë‹¤. (ë²„í”„ í•´ì œ ì‹œ ì í•©)
         // _flatModifiers.RemoveAll(mod => mod.Source == sourceName);
 
-        // [¿É¼Ç B] ÀÌ¸§ÀÌ °°Àº °Í Áß '¸Ç ¾Õ¿¡ ÀÖ´Â ÇÏ³ª'¸¸ Áö¿î´Ù. (¾ÆÀÌÅÛ ÇØÁ¦ ½Ã ÀûÇÕ)
-        // ½Ö°¡¶ôÁö Áß ÇÏ³ª¸¸ »¬ ¶§ À¯¿ëÇÔ
+        // [ì˜µì…˜ B] ì´ë¦„ì´ ê°™ì€ ê²ƒ ì¤‘ 'ë§¨ ì•ì— ìˆëŠ” í•˜ë‚˜'ë§Œ ì§€ìš´ë‹¤. (ì•„ì´í…œ í•´ì œ ì‹œ ì í•©)
+        // ìŒê°€ë½ì§€ ì¤‘ í•˜ë‚˜ë§Œ ëº„ ë•Œ ìœ ìš©í•¨
         RemoveFirstMatch(_flatModifiers, sourceName);
         RemoveFirstMatch(_percentModifiers, sourceName);
     }
 
-    // ¸®½ºÆ®¿¡¼­ ÇÏ³ª¸¸ Ã£¾Æ¼­ Áö¿ì´Â ÇïÆÛ ÇÔ¼ö
+    // ë¦¬ìŠ¤íŠ¸ì—ì„œ í•˜ë‚˜ë§Œ ì°¾ì•„ì„œ ì§€ìš°ëŠ” í—¬í¼ í•¨ìˆ˜
     private void RemoveFirstMatch(List<StatModifier> list, string name)
     {
-        // ¸®½ºÆ®¸¦ ¼øÈ¸ÇÏ¸ç ÀÌ¸§ÀÌ °°Àº Ã¹ ¹øÂ° ³à¼®À» Ã£À½
+        // ë¦¬ìŠ¤íŠ¸ë¥¼ ìˆœíšŒí•˜ë©° ì´ë¦„ì´ ê°™ì€ ì²« ë²ˆì§¸ ë…€ì„ì„ ì°¾ìŒ
         var target = list.Find(mod => mod.Source == name);
         if (target != null)
         {
@@ -68,12 +68,12 @@ public class PlayerDamageCalculator
         }
     }
 
-    // 3. µ¥¹ÌÁö °è»ê (µñ¼Å³Ê¸®¿Í °ÅÀÇ °°À½)
+    // 3. ë°ë¯¸ì§€ ê³„ì‚° (ë”•ì…”ë„ˆë¦¬ì™€ ê±°ì˜ ê°™ìŒ)
     public float CalculateDamage()
     {
         float totalDamage = BaseDamage;
 
-        // ¸®½ºÆ® ¼øÈ¸ (Loop)
+        // ë¦¬ìŠ¤íŠ¸ ìˆœíšŒ (Loop)
         foreach (var mod in _flatModifiers)
         {
             totalDamage += mod.Value;

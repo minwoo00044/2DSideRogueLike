@@ -18,7 +18,7 @@ public class ConsoleManager : MonoBehaviour
         {
             { "Log", TestLog },
             { "Equip", EquipItem },
-            { "Quit", (cmd) => { Application.Quit(); return true; } } // ¶÷´Ù½Ä ¿¹½Ã
+            { "Quit", (cmd) => { Application.Quit(); return true; } } // ëŒë‹¤ì‹ ì˜ˆì‹œ
         };
 
         consoleText.gameObject.SetActive(false);
@@ -56,11 +56,11 @@ public class ConsoleManager : MonoBehaviour
 
     public void CommandInput(string text)
     {
-        // ¿£ÅÍ ÃÆÀ» ¶§ ´Ù½Ã Æ÷Ä¿½º À¯ÁöÇÒÁö, ²øÁö °áÁ¤ (¿©±â¼± À¯Áö ÈÄ ÃÊ±âÈ­)
+        // ì—”í„° ì³¤ì„ ë•Œ ë‹¤ì‹œ í¬ì»¤ìŠ¤ ìœ ì§€í• ì§€, ëŒì§€ ê²°ì • (ì—¬ê¸°ì„  ìœ ì§€ í›„ ì´ˆê¸°í™”)
         consoleText.text = "";
-        consoleText.ActivateInputField(); // ¿¬¼Ó ÀÔ·Â ÆíÀÇ¼º
+        consoleText.ActivateInputField(); // ì—°ì† ì…ë ¥ í¸ì˜ì„±
 
-        if (string.IsNullOrWhiteSpace(text)) return; // ºó °ª ¹æ¾î
+        if (string.IsNullOrWhiteSpace(text)) return; // ë¹ˆ ê°’ ë°©ì–´
 
         var res = CommandProcess(text);
         Debug.Log($"Command result : {res}");
@@ -68,7 +68,7 @@ public class ConsoleManager : MonoBehaviour
 
     public bool CommandProcess(string text)
     {
-        // °ø¹éÀ¸·Î ³ª´­ ¶§, ºó °ø¹é Á¦°Å ¿É¼Ç Ãß°¡
+        // ê³µë°±ìœ¼ë¡œ ë‚˜ëˆŒ ë•Œ, ë¹ˆ ê³µë°± ì œê±° ì˜µì…˜ ì¶”ê°€
         var parts = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length == 0) return false;
@@ -86,7 +86,7 @@ public class ConsoleManager : MonoBehaviour
         }
     }
 
-   
+
     public bool TestLog(string command)
     {
         var split = command.Split();

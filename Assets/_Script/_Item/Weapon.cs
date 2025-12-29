@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-// IGizmoDrawable ÀÎÅÍÆäÀÌ½ºµµ WeaponÀÌ ±¸ÇöÇØ¼­ Strategy¿¡°Ô ³Ñ°ÜÁİ´Ï´Ù.
+// IGizmoDrawable ì¸í„°í˜ì´ìŠ¤ë„ Weaponì´ êµ¬í˜„í•´ì„œ Strategyì—ê²Œ ë„˜ê²¨ì¤ë‹ˆë‹¤.
 public class Weapon : Item, IGizmoDrawable
 {
     private IWeaponStrategy _currentStrategy;
@@ -12,24 +12,24 @@ public class Weapon : Item, IGizmoDrawable
         owner.OnAttack += Attack;
     }
 
-    // ¡Ú °¡Àå Áß¿äÇÑ ºÎºĞ: µ¥ÀÌÅÍ°¡ µé¾î¿Ã ¶§ Çàµ¿(Strategy)À» °áÁ¤ÇÕ´Ï´Ù.
+    // â˜… ê°€ì¥ ì¤‘ìš”í•œ ë¶€ë¶„: ë°ì´í„°ê°€ ë“¤ì–´ì˜¬ ë•Œ í–‰ë™(Strategy)ì„ ê²°ì •í•©ë‹ˆë‹¤.
     public override void Equip(ItemData data)
     {
-        base.Equip(data); // Data = data ¼³Á¤µÊ
+        base.Equip(data); // Data = data ì„¤ì •ë¨
 
         if (data is MeleeWeaponData)
         {
             _currentStrategy = new MeleeStrategy();
-            // ÇÊ¿äÇÏ´Ù¸é ¿©±â¼­ ¹öÇÁ Àû¿ë (MeleeWeapon¿¡ ÀÖ´ø ·ÎÁ÷)
+            // í•„ìš”í•˜ë‹¤ë©´ ì—¬ê¸°ì„œ ë²„í”„ ì ìš© (MeleeWeaponì— ìˆë˜ ë¡œì§)
             if (Owner != null) Owner.AddBuff((data as MeleeWeaponData).Damage, 0);
         }
-        //else if (data is RangedWeaponData) // RangedWeaponData Å¬·¡½º°¡ ÀÖ´Ù°í °¡Á¤
+        //else if (data is RangedWeaponData) // RangedWeaponData í´ë˜ìŠ¤ê°€ ìˆë‹¤ê³  ê°€ì •
         //{
         //    _currentStrategy = new RangedStrategy();
         //}
         else
         {
-            Debug.LogWarning("¾Ë ¼ö ¾ø´Â ¹«±â µ¥ÀÌÅÍ Å¸ÀÔÀÔ´Ï´Ù.");
+            Debug.LogWarning("ì•Œ ìˆ˜ ì—†ëŠ” ë¬´ê¸° ë°ì´í„° íƒ€ì…ì…ë‹ˆë‹¤.");
             _currentStrategy = null;
         }
 
@@ -40,11 +40,11 @@ public class Weapon : Item, IGizmoDrawable
     {
         if (Data == null || _currentStrategy == null) return;
 
-        // ÇöÀç Àü·«¿¡°Ô °ø°İ À§ÀÓ
+        // í˜„ì¬ ì „ëµì—ê²Œ ê³µê²© ìœ„ì„
         _currentStrategy.Attack(owner, Data);
     }
 
-    // Gizmo ±×¸®±â À§ÀÓ
+    // Gizmo ê·¸ë¦¬ê¸° ìœ„ì„
     public void DrawGizmos(Transform ownerTransform)
     {
         if (Data == null || _currentStrategy == null) return;
@@ -54,7 +54,7 @@ public class Weapon : Item, IGizmoDrawable
 
     public override void Unequip()
     {
-        // ¹öÇÁ ÇØÁ¦ µîÀÇ ·ÎÁ÷
+        // ë²„í”„ í•´ì œ ë“±ì˜ ë¡œì§
         _currentStrategy = null;
         base.Unequip();
     }
