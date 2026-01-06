@@ -3,32 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
+[RequireComponent(typeof(PlayerStat))]
 public class PlayerController : MonoBehaviour, IDamagable
 {
 
     [Header("컴포넌트 설정")]
     [SerializeField] private SPUM_Prefabs spumAnimationManager;
-    [SerializeField] private Slider staminaBar;
     private Rigidbody2D rb;
+    private PlayerStat playerStat;
 
 
     [Header("물리 재질 설정")]
     [SerializeField] private PhysicsMaterial2D normalFrictionMaterial;
     [SerializeField] private PhysicsMaterial2D zeroFrictionMaterial;
-
-    [Header("이동 및 대시 설정")]
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float dashForce = 20f;
-    [SerializeField] private float dashDuration = 0.2f;
-
-    [Header("스태미나 설정")]
-    [SerializeField] private float maxStamina = 3f;
-    [SerializeField] private float staminaRegenRate = 2f;
-    [SerializeField] private float staminaRegenDelay = 1f;
-    private float currentStamina;
-    private float staminaRegenTimer;
 
     [Header("지면 체크 설정")]
     [SerializeField] private Transform groundCheck;
@@ -38,8 +27,9 @@ public class PlayerController : MonoBehaviour, IDamagable
     private bool isFacingRight = false;
     private bool isDashing = false;
     private bool isAttacking = false;
-
+    [Header("이벤트")]
     public Action<PlayerController> OnDash;
+    public Action<PlayerController, float> OnDamaged;
     public Action<PlayerController> OnAttack;
 
     //[Header("아이템")]
@@ -51,6 +41,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerStat = GetComponent<PlayerStat>();
         items.Clear();
         items.Add(ItemType.Weapons, new Weapon(this));
         // 초기화 코드
@@ -61,12 +52,6 @@ public class PlayerController : MonoBehaviour, IDamagable
 
     private void Start()
     {
-        currentStamina = maxStamina;
-        if (staminaBar != null)
-        {
-            staminaBar.maxValue = maxStamina;
-            staminaBar.value = currentStamina;
-        }
         if (spumAnimationManager != null)
         {
             spumAnimationManager.OverrideControllerInit();
@@ -88,7 +73,7 @@ public class PlayerController : MonoBehaviour, IDamagable
 
         float moveInput = Input.GetAxis("Horizontal");
         // --- 이동 처리 ---
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(moveInput * playerStat.MoveSpeed, rb.linearVelocity.y);
 
         if (moveInput > 0 && !isFacingRight) Flip();
         else if (moveInput < 0 && isFacingRight) Flip();
@@ -106,15 +91,13 @@ public class PlayerController : MonoBehaviour, IDamagable
             HandleDash();
         }
 
-        if  (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             if (!isAttacking)
             {
                 StartCoroutine(AttackRoutine());
             }
         }
-
-        UpdateStaminaUI();
     }
     IEnumerator AttackRoutine()
     {
@@ -133,20 +116,20 @@ public class PlayerController : MonoBehaviour, IDamagable
     }
     private void HandleStaminaRegen()
     {
-        if (staminaRegenTimer > 0)
+        if (playerStat.StaminaRegenTimer > 0)
         {
-            staminaRegenTimer -= Time.deltaTime;
+            playerStat.StaminaRegenTimer -= Time.deltaTime;
         }
-        else if (currentStamina < maxStamina)
+        else if (playerStat.CurrentStamina < playerStat.MaxStamina)
         {
-            currentStamina += (1 / staminaRegenRate) * Time.deltaTime;
-            currentStamina = Mathf.Min(currentStamina, maxStamina);
+            playerStat.CurrentStamina += (1 / playerStat.StaminaRegenRate) * Time.deltaTime;
+            playerStat.CurrentStamina = Mathf.Min(playerStat.CurrentStamina, playerStat.MaxStamina);
         }
     }
 
     private void HandleDash()
     {
-        if (currentStamina < 1)
+        if (playerStat.CurrentStamina < 1)
         {
             Debug.Log("스태미나가 부족합니다!");
             return;
@@ -158,11 +141,11 @@ public class PlayerController : MonoBehaviour, IDamagable
 
         if (dashDirection == Vector2.zero)
         {
-            if (isGrounded) 
+            if (isGrounded)
             {
                 // Y축 속도를 초기화하여 일정 높이 점프 보장
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
-                rb.AddForce(Vector2.up * dashForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * playerStat.DashForce, ForceMode2D.Impulse);
 
                 // 대시 애니메이션 호출 예시
                 // spumAnimationManager.PlayAnimation(PlayerState.OTHER, 1); // 점프
@@ -171,7 +154,7 @@ public class PlayerController : MonoBehaviour, IDamagable
         }
         if (vInput < 0 && hInput == 0 && isGrounded) return;
 
-        currentStamina -= 1;
+        playerStat.ChangeStamina(-1);
         StartCoroutine(DashCoroutine(dashDirection.normalized));
     }
 
@@ -187,14 +170,14 @@ public class PlayerController : MonoBehaviour, IDamagable
         rb.linearVelocity = Vector2.zero;
 
         Vector2 finalDashForce = new Vector2(
-            dashDirection.x * dashForce,
-            dashDirection.y * dashForce
+            dashDirection.x * playerStat.DashForce,
+            dashDirection.y * playerStat.DashForce
         );
 
         rb.AddForce(finalDashForce, ForceMode2D.Impulse);
 
         float afterimageTimer = 0f;
-        while (afterimageTimer < dashDuration)
+        while (afterimageTimer < playerStat.DashDuration)
         {
             // 1. 풀에서 잔상 가져오기
             AfterimageSprite afterimage = AfterimagePool.instance.GetFromPool();
@@ -204,25 +187,17 @@ public class PlayerController : MonoBehaviour, IDamagable
                 afterimage.Setup(transform);
             }
 
-            afterimageTimer += 0.05f; 
+            afterimageTimer += 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
 
-        yield return new WaitForSeconds(dashDuration);
+        yield return new WaitForSeconds(playerStat.DashDuration);
 
         rb.gravityScale = originalGravity;
         if (wasGrounded) rb.sharedMaterial = normalFrictionMaterial;
 
         isDashing = false;
-        staminaRegenTimer = staminaRegenDelay;
-    }
-
-    private void UpdateStaminaUI()
-    {
-        if (staminaBar != null)
-        {
-            staminaBar.value = currentStamina;
-        }
+        playerStat.StaminaRegenTimer = playerStat.StaminaRegenDelay;
     }
 
     private void Flip()
@@ -240,14 +215,14 @@ public class PlayerController : MonoBehaviour, IDamagable
     }
     public void AddBuff(float plus, float multiple)
     {
-        if(plus != 0)
+        if (plus != 0)
             damageCalculator.AddModifier("Buff_Flat", plus, false);
-        if(multiple != 0)
+        if (multiple != 0)
             damageCalculator.AddModifier("Buff_Percent", multiple, true);
     }
     private void OnDrawGizmos()
     {
-        if ( !items.ContainsKey(ItemType.Weapons) || items[ItemType.Weapons] == null ) return;
+        if (!items.ContainsKey(ItemType.Weapons) || items[ItemType.Weapons] == null) return;
         Weapon weapon = items[ItemType.Weapons] as Weapon;
         weapon.DrawGizmos(transform);
     }
@@ -255,5 +230,8 @@ public class PlayerController : MonoBehaviour, IDamagable
     public void TakeDamage(float damage)
     {
         Debug.Log($"Player took {damage} damage.");
+        spumAnimationManager.PlayAnimation(PlayerState.DAMAGED, 0);
+        OnDamaged?.Invoke(this, damage);
+        playerStat.ChangeHp(damage);
     }
 }
