@@ -7,12 +7,12 @@ public class PlayerStat : MonoBehaviour
 
     [Header("이동 및 대시 설정")]
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float dashForce = 20f;
+    [SerializeField] private float dashForce = 5f;
     [SerializeField] private float dashDuration = 0.2f;
 
     [Header("스태미나 설정")]
     [SerializeField] private float maxStamina = 3f;
-    [SerializeField] private float staminaRegenRate = 2f;
+    [SerializeField] private float staminaRegenRate = 0.5f;
     [SerializeField] private float staminaRegenDelay = 1f;
 
     [Header("체력 설정")]

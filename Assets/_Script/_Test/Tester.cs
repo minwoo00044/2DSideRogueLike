@@ -16,7 +16,7 @@ public class _Tester : MonoBehaviour
         ItemCache.ReadData<MeleeWeaponData>("MeleeWeaponData");
 
         // 테스트
-        var item = ItemCache.GetItem("Sword_2"); // ID 예시
+        var item = ItemCache.GetItem<MeleeWeaponData>("Sword_2"); // ID 예시
         if (item != null) Debug.Log(item.ItemName);
     }
 

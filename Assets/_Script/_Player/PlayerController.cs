@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour, IDamagable
         }
         else if (playerStat.CurrentStamina < playerStat.MaxStamina)
         {
-            playerStat.CurrentStamina += (1 / playerStat.StaminaRegenRate) * Time.deltaTime;
+            playerStat.CurrentStamina += playerStat.StaminaRegenRate * Time.deltaTime;
             playerStat.CurrentStamina = Mathf.Min(playerStat.CurrentStamina, playerStat.MaxStamina);
         }
     }

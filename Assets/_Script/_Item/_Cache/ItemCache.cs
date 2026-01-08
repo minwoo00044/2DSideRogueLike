@@ -1,44 +1,42 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
 public static class ItemCache
 {
-    private static Dictionary<string, ItemData> datas = new Dictionary<string, ItemData>();
-    public static bool IsInitialized { get; private set; } = false;
-
+    // Typeë³„ë¡œ ë³„ë„ì˜ ë”•ì…”ë„ˆë¦¬ë¥¼ ê´€ë¦¬í•©ë‹ˆë‹¤.
+    private static Dictionary<Type, Dictionary<string, ItemData>> allDatas = new Dictionary<Type, Dictionary<string, ItemData>>();
+    private static List<Type> initializedTypes = new List<Type>();
     public static void ReadData<T>(string csvFileName) where T : ItemData
     {
-        if (IsInitialized) return;
+        Type itemType = typeof(T);
 
-        datas.Clear();
+        // ì´ë¯¸ í•´ë‹¹ íƒ€ì…ì´ ë¡œë“œë˜ì—ˆë‹¤ë©´ ì¤‘ë³µ ë¡œë“œ ë°©ì§€
+        if (initializedTypes.Contains(itemType)) return;
+
         TextAsset csvData = Resources.Load<TextAsset>(csvFileName);
-
         if (csvData == null)
         {
-            Debug.LogError($"[ItemCache] Resources Æú´õ¿¡¼­ {csvFileName}À» Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError($"[ItemCache] {csvFileName}ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
 
-        string[] lines = csvData.text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        // í•´ë‹¹ íƒ€ì… ì „ìš© ë”•ì…”ë„ˆë¦¬ ìƒì„±
+        if (!allDatas.ContainsKey(itemType))
+            allDatas[itemType] = new Dictionary<string, ItemData>();
 
+        string[] lines = csvData.text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
         if (lines.Length <= 1) return;
 
         string[] headers = lines[0].Split(',');
-        Type itemType = typeof(T);
 
         for (int i = 1; i < lines.Length; i++)
         {
-            // CSV ½°Ç¥ ºĞ¸® (µû¿ÈÇ¥ Ã³¸®°¡ ¾ø´Â °£´ÜÇÑ ¹öÀü)
             string[] values = lines[i].Split(',');
-            if (values.Length != headers.Length)
-            {
-                Debug.LogWarning($"[ItemCache] {i}¹øÂ° ÁÙ µ¥ÀÌÅÍ °³¼ö ºÒÀÏÄ¡. (Header: {headers.Length}, Value: {values.Length})");
-                continue;
-            }
+            if (values.Length != headers.Length) continue;
 
-            T instance = (T)Activator.CreateInstance(itemType);
+            T instance = Activator.CreateInstance<T>();
 
             for (int j = 0; j < headers.Length; j++)
             {
@@ -46,83 +44,66 @@ public static class ItemCache
                 string value = values[j].Trim();
                 if (string.IsNullOrEmpty(value)) continue;
 
-                // BindingFlags Ãß°¡: ºÎ¸ğ Å¬·¡½ºÀÇ ÇÊµåµµ Ã£±â À§ÇØ FlattenHierarchy µî °í·Á °¡´ÉÇÏ³ª, Public/NonPublicÀ¸·Î ÃæºĞÇÒ ¼ö ÀÖÀ½
+                // FlattenHierarchyë¥¼ ì¶”ê°€í•˜ì—¬ ë¶€ëª¨ í´ë˜ìŠ¤ì˜ í•„ë“œê¹Œì§€ íƒìƒ‰
                 FieldInfo field = itemType.GetField(header,
-                    BindingFlags.Public |
-                    BindingFlags.Instance |
-                    BindingFlags.NonPublic |
-                    BindingFlags.IgnoreCase);
+                    BindingFlags.Public | BindingFlags.NonPublic |
+                    BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.FlattenHierarchy);
 
                 if (field != null)
                 {
                     try
                     {
-                        object convertedValue = null;
-
-                        // 1. Enum Ã³¸®
-                        if (field.FieldType.IsEnum)
-                        {
-                            convertedValue = Enum.Parse(field.FieldType, value);
-                        }
-                        // 2. Vector2 Ã³¸® (Çü½Ä: "x|y")
-                        else if (field.FieldType == typeof(Vector2))
-                        {
-                            string[] vec = value.Split('|');
-                            if (vec.Length == 2)
-                            {
-                                float x = float.Parse(vec[0]);
-                                float y = float.Parse(vec[1]);
-                                convertedValue = new Vector2(x, y);
-                            }
-                        }
-                        // 3. Vector3 Ã³¸® (Çü½Ä: "x|y|z")
-                        else if (field.FieldType == typeof(Vector3))
-                        {
-                            string[] vec = value.Split('|');
-                            if (vec.Length == 3)
-                            {
-                                float x = float.Parse(vec[0]);
-                                float y = float.Parse(vec[1]);
-                                float z = float.Parse(vec[2]);
-                                convertedValue = new Vector3(x, y, z);
-                            }
-                        }
-                        // 4. ±âº» Å¸ÀÔ Ã³¸®
-                        else
-                        {
-                            convertedValue = Convert.ChangeType(value, field.FieldType);
-                        }
-
-                        if (convertedValue != null)
-                        {
-                            field.SetValue(instance, convertedValue);
-                        }
+                        field.SetValue(instance, ConvertValue(value, field.FieldType));
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError($"[ItemCache] ÆÄ½Ì ¿¡·¯ (Field: {header}, Value: {value}): {e.Message}");
+                        Debug.LogError($"[ItemCache] {header} íŒŒì‹± ì—ëŸ¬: {e.Message}");
                     }
                 }
-                // µğ¹ö±ë¿ë: ÇÊµå¸¦ ¸ø Ã£¾ÒÀ» ¶§ °æ°í (³Ê¹« ¸¹ÀÌ ¶ã ¼ö ÀÖÀ¸´Ï ÁÖÀÇ)
-                // else { Debug.LogWarning($"ÇÊµå '{header}'¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."); }
             }
 
-            if (!datas.ContainsKey(instance.ItemName))
-            {
-                datas.Add(instance.ItemName, instance);
-            }
+            if (!allDatas[itemType].ContainsKey(instance.ItemName))
+                allDatas[itemType].Add(instance.ItemName, instance);
         }
 
-        IsInitialized = true;
-        Debug.Log($"[ItemCache] {typeof(T).Name} µ¥ÀÌÅÍ ·Îµå ¿Ï·á: {datas.Count}°³");
+        initializedTypes.Add(itemType);
+        Debug.Log($"[ItemCache] {itemType.Name} ë¡œë“œ ì™„ë£Œ ({allDatas[itemType].Count}ê°œ)");
     }
 
-    public static ItemData GetItem(string itemName)
+    // ì œë„¤ë¦­ ë°˜í™˜ì„ í†µí•´ ìºìŠ¤íŒ… ë¶ˆí¸í•¨ í•´ì†Œ
+    public static T GetItem<T>(string itemName) where T : ItemData
     {
-        if (datas.TryGetValue(itemName, out ItemData item))
+        if (allDatas.TryGetValue(typeof(T), out var dict))
         {
-            return item;
+            if (dict.TryGetValue(itemName, out var item))
+                return item as T;
         }
         return null;
+    }
+    public static ItemData GetItem(string itemName)
+    {
+        // ëª¨ë“  ë”•ì…”ë„ˆë¦¬ë¥¼ ìˆœíšŒí•˜ë©° ì´ë¦„ì´ ì¼ì¹˜í•˜ëŠ” ì•„ì´í…œì„ ì°¾ìŒ
+        foreach (var dict in allDatas.Values)
+        {
+            if (dict.TryGetValue(itemName, out var item)) return item;
+        }
+        return null;
+    }
+
+    // ê°’ ë³€í™˜ ë¡œì§ ë¶„ë¦¬ (ê°€ë…ì„±)
+    private static object ConvertValue(string value, Type type)
+    {
+        if (type.IsEnum) return Enum.Parse(type, value);
+        if (type == typeof(Vector2))
+        {
+            var s = value.Split('|');
+            return new Vector2(float.Parse(s[0]), float.Parse(s[1]));
+        }
+        if (type == typeof(Vector3))
+        {
+            var s = value.Split('|');
+            return new Vector3(float.Parse(s[0]), float.Parse(s[1]), float.Parse(s[2]));
+        }
+        return Convert.ChangeType(value, type);
     }
 }

@@ -1,12 +1,13 @@
 using UnityEngine;
 using System.Linq; // LINQ를 사용하기 위해 추가
 
+
 public class AdvancedEquipmentController : MonoBehaviour
 {
     public static AdvancedEquipmentController Instance { get; set; }
     [Header("컴포넌트 연결")]
     [SerializeField] private GameObject playerCharacter; // 인스펙터에서 플레이어 SPUM 캐릭터 할당
-    [SerializeField]private PlayerController playerController;
+    [SerializeField] private PlayerController playerController;
 
     // 캐릭터에 붙은 스크립트 참조
     private SPUM_Prefabs _spumPrefabs;
@@ -14,7 +15,7 @@ public class AdvancedEquipmentController : MonoBehaviour
 
     void Start()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -37,6 +38,10 @@ public class AdvancedEquipmentController : MonoBehaviour
         {
             Debug.LogError("캐릭터에서 SPUM_Prefabs 또는 SPUM_SpriteList를 찾을 수 없습니다.");
         }
+        else
+        {
+            SpumDataCache.Initialize(_spumPrefabs);
+        }
     }
 
     /// <summary>
@@ -48,19 +53,8 @@ public class AdvancedEquipmentController : MonoBehaviour
         if (_spumPrefabs == null) return;
 
         // 1. 모든 패키지를 뒤져서 원하는 아이템 텍스처 데이터를 찾습니다.
-        SpumTextureData targetTextureData = null;
-        foreach (var package in _spumPrefabs.spumPackages)
-        {
-            targetTextureData = package.SpumTextureData.FirstOrDefault(data =>
-                data.Name == itemName
-            );
-
-            if (targetTextureData != null)
-            {
-                break; // 데이터를 찾았으면 반복 종료
-            }
-        }
-
+        SpumTextureData targetTextureData = SpumDataCache.GetSpumData(itemName);
+        string type = targetTextureData.PartType;
         // 데이터를 찾지 못한 경우
         if (targetTextureData == null)
         {

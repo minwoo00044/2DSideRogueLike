@@ -2510,6 +2510,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3862318291570440192, guid: 0bda45e1d82e24841b5fc715d755b750, type: 3}
+      propertyPath: dashForce
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3862318291570440192, guid: 0bda45e1d82e24841b5fc715d755b750, type: 3}
+      propertyPath: staminaRegenRate
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5846668250766909647, guid: 0bda45e1d82e24841b5fc715d755b750, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
